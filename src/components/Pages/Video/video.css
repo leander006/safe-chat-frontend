@@ -1,0 +1,23 @@
+.row{
+    padding: 0;
+    margin: 0;
+    font-family: 'Syne Mono', monospace;
+}
+
+.video{
+    height: 220px;
+    width: 340px;
+}
+.card{
+    width: 343px;
+    border: 1px solid beige;
+   
+    margin-top: 60px;
+    
+}
+
+.title{
+    text-align: center;
+    color: teal;
+}
+

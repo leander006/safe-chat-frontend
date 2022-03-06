@@ -1,0 +1,115 @@
+nav{
+    
+    display: flex;
+    justify-content: space-between;
+    background-color: #FFDDE1;
+    font-family: 'Lora', serif;
+}
+#icon{
+    display: none;
+    height: 25px;
+    cursor: pointer;
+    padding: 10px;
+    color: rgb(32, 167, 245);
+}
+
+#closeicon{
+    display: flex;
+    margin-left: 170px;
+    cursor: pointer;
+ 
+    color: rgb(32, 167, 245);
+}
+.navbar{
+    height: 100vh;
+        width: 200px;
+        display: flex;
+        flex-direction: column;
+
+}
+.navbar #center{
+    display: flex;
+    flex-direction: column;
+}
+.navbar #it{
+    margin-top: 40px;
+}
+.navbar #txt{
+    margin-top: 10px;
+}
+.navbar .itemLeft{
+    display: flex;
+}
+.navbar .itemRight{
+    display: flex;
+}
+.itemLeft h1{
+    color: rgb(134, 80, 29);
+    padding-left: 10px;
+
+}
+.itemCenter {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 20px;
+  
+  
+}
+.item a{
+    margin: 10px;
+    text-decoration: none;
+    font-family: 'Varela Round', sans-serif;
+    color: chocolate;
+    
+}
+.item a:hover{
+
+    color: rgb(247, 194, 156)
+    
+}
+.itemRight{
+    padding-right: 15px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+.image{
+    width: 40px;
+    height: 40px;
+    border-radius: 30px;
+}
+.text{
+    font-family: 'Varela', sans-serif;
+    color: rgba(194, 7, 201, 0.438);
+    margin-right: 10px;
+}
+@media (max-width: 780px){
+    nav{
+        display: flex;
+    }
+    .itemCenter{
+        display: flex;
+    }
+    .itemRight{
+        display: flex;
+    }
+    .itemLeft{
+        display: flex;
+    }
+}
+
+@media (max-width: 630px){
+    #icon{
+        display: flex;
+    }
+    .itemCenter{
+        display: none;
+    }
+    .itemRight{
+        display: none;
+    }
+    .itemLeft{
+        display: none;
+    }
+
+}

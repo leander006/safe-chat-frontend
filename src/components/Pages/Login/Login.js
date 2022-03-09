@@ -1,32 +1,48 @@
-import React, { useState } from 'react'
+
+
+import React, {  useState } from 'react'
 import './login.css';
+import { useNavigate } from 'react-router-dom';
+import Navbar from '../../navbar/Navbar';
 const axios = require('axios')
 
 function Login() {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
+  const navigate = useNavigate();
 
   const handleSubmit = async(e) =>{
       e.preventDefault();
+     
       try {
-        const res = await axios.post("http://localhost:4000/api/auth/login",{
+        const {data} = await axios.post("http://localhost:4000/api/auth/login",{
           username:username,
           password:password
         })
+
+       
+        setUsername("");
+        setPassword("");
+
+        localStorage.setItem("userInfo",JSON.stringify(data));
+        navigate("/")
+
 
         //toast---------
       } catch (error) {
         console.log(error);
               //toast---------
       }
-
-      setUsername("");
-      setPassword("");
+  
+     
   }
   return (
+    <>
+      <Navbar/>
+
     <div className='login'>
+    
     <form className='loginform' onSubmit={handleSubmit}>
   <div className="mb-3">
     <label className="form-label" >Username</label>
@@ -41,6 +57,7 @@ function Login() {
   <button type="submit" className="loginbutton">Submit</button>
 </form>
 </div>
+</>
   )
 }
 

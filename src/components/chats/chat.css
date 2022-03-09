@@ -1,60 +1,45 @@
 *{
     padding: 0;
-    margin: 0;
-    
+    margin: 0;  
 }
-.closemain{
-    display: none;
-}
-.main{
+.center{
     
-    max-width: 75vw; 
+    max-width: 90vw; 
     height: 85vh;
     display: flex;
-    flex-direction: column;
+    
+   
     margin: auto;
     border: 1px solid bisque;
     background-color: rgb(230, 224, 224);
     border-radius: 20px;
-    justify-content: space-between;
+    
 }
 .content{
    padding: 10px;
+   display: flex;
+   flex-direction: column;
+   justify-content: space-between;
    overflow-y: scroll;
-   
-
+   scroll-behavior: auto;
 }
 
 .chatButtom{
     display: flex;
-   
-    
     justify-content: space-between;
 }
 
- .input{
-   
-
-    width: 90%;
- 
-    border-radius: 10px;
-    
+.input{
+    width: 83vw;
+    border-radius: 5px; 
 }
 #button{
     cursor: pointer;
     color: teal;
-    margin-top: 20px;
+    margin: auto;
    
 }
-.close{
-    color: rgb(235, 250, 26);
-    padding: 8px;
-    cursor: pointer;
-}
-.close:hover{
-    color:rgb(250, 255, 204);
-}
+
 #button:hover{
-    color:rgb(124, 250, 250);
-    
+    color:rgb(124, 250, 250);  
 } 

@@ -1,17 +1,17 @@
 import {format} from "timeago.js"
-import { useEffect, useState } from 'react';
+
 import './message.css';
-const axios = require('axios');
 
 
-function Message({message,admin}) {
+
+function Message({message,own}) {
    
 
     
   return (
-    <div className={admin?"message admin":"message"}>
+    <div className={own?"message own":"message"}>
         <div className='messageTop' >
-            <img className='messageImg' src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqQMwq_mZ2I9qpXPhmIeJ5on2jZTavrF65Kw&usqp=CAU"/> 
+            <img className='messageImg' src={message?.sender?.profilePic}/> 
 
         <p className='messageText'>{message.text}</p>
         </div>

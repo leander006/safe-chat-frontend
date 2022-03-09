@@ -1,75 +1,124 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
+
 import Message from '../Message/Message';
 import './chat.css';
-
-const axios = require('axios')
+const {io} = require('socket.io-client')
+const axios = require('axios');
+const {Context} = require("../../context/ContextProvider")
 function Chats() {
-   
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("")
+    const [arrivalMessage, setArrivalMessage] = useState(null)
     const [close, setClose] = useState(false);
-    const scroll = useRef();
+    // const scroll = useRef();
+
+    const socket = useRef()
+
+    const {user} = useContext(Context)
+    
+useEffect(() => {
+    socket.current = io("ws://localhost:8900");
+    socket.current.on("getMessage", data =>{
+        setArrivalMessage({
+            sender:data.senderId,
+            text: data.text,
+            createdAt:Date.now()
+          
+          }); 
+    })
+},[])
+
+useEffect(() => {
+    arrivalMessage &&
+    setMessages((prev) =>[...prev,arrivalMessage])
+}, [arrivalMessage])
+
+
+
+    useEffect(() => {
+        socket.current.emit("addUser",user.others?._id);
+        socket.current.on('getUser', users =>{
+})
+    },[user.others?._id])
+    
+    
+
 
 //-----to get Message from DB-----//
     useEffect(() => {
         const getMessages = async() =>{
+    //     const config ={
+    //     headers:{
+    //       Authorization:`Bearer ${user.token}`
+    //     }
+    //   }
             try {
-                const message = await axios.get("http://localhost:4000/api/message");
-                console.log(message.data);
-                setMessages(message.data);
-            } catch (error) {
                 
+                const message = await axios.get("http://localhost:4000/api/message");
+              setMessages(message.data);
+                // console.log(message.data);
+            } catch (error) {
+                console.log(error);
             }
         };
         getMessages();
-        scroll?.current.scrollIntoView({behaviour:"smooth"});
-    }, [])
-
+     
+    },[])
+   
     //-------to create message from frontend--------//
-    const handleClose =(e)=>{
-        e.preventDefault();
-        setClose(true)
-
-    }
+ 
+    
     const handleSubmit = async(e) =>{
         e.preventDefault();
-        if(newMessage==="")
+        if(newMessage===" ")
         {
             return;
         }
-        try {
+        // const config ={
+        //     headers:{
+        //       Authorization:`Bearer ${user.token}`
+        //     }
+        //   }
+      
+
+        try 
+           {
             const message = await axios.post("http://localhost:4000/api/message",{
-                sender:"6224e9f26a9468c255a6147f",
+                sender:user.others?._id,
+                text:newMessage,
+            });
+        
+            socket.current.emit("sendMessage",{
+                sender:user.others._id,
                 text:newMessage,
             });
             setMessages([...messages,message.data])
-            setMessages("");
+            setMessages("");  
         } catch (error) {
             console.log(error);
         }
         
     }
   return (
+
      
-    <div className={close?"closemain":"main"}>
-        
-        <div className='close'>
-        <i  onClick={handleClose} class="fa-solid fa-2xl  fa-xmark"></i>
-        </div>
+    <div className="center">
     <div className='content'>
     <div className='chatTop' >
-        <div ref={scroll}>
-        {messages.map(m=>(
-            <Message message={m} admin={m.sender.admin}/>
+        {messages?.map((m) =>(
+           
+            <Message message={m}  own={m?.sender?._id === user.others?._id}/>
         ))}
-      </div>
     </div>
+    
     <div className='chatButtom'>
-    <textArea className='input' value={newMessage} onChange={(e) =>setNewMessage(e.target.value)} type="text"></textArea>
+    <textarea className='input' value={newMessage} onChange={(e) =>setNewMessage(e.target.value)} type="text"></textarea>
     <i onClick={handleSubmit} className="fa-solid fa-2xl fa-paper-plane" id='button'></i>
     </div>
     </div>
     </div>
+
+  
   )
 }
 

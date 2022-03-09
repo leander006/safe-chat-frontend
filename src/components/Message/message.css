@@ -5,13 +5,9 @@
 }
 .messageTop{
     display: flex;
-    /* justify-content: end; */
     
 }
-/* #messageTopAdmin{
-    display: flex;
-    justify-content: end;
-} */
+
 .messageImg{
     width: 32px;
     height: 32px;
@@ -35,11 +31,11 @@
     margin-bottom: 20px;
     font-size:12px
 }
-.message.admin {
+.message.own {
     align-items: flex-end;
    
 }
 
-.message.admin .messageText{
+.message.own .messageText{
     background-color: rgba(16, 238, 208, 0.808);
 }

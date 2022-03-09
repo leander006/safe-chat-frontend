@@ -30,6 +30,7 @@ nav{
 .navbar #center{
     display: flex;
     flex-direction: column;
+  
 }
 .navbar #it{
     margin-top: 40px;
@@ -60,6 +61,19 @@ nav{
     text-decoration: none;
     font-family: 'Varela Round', sans-serif;
     color: chocolate;
+    
+}
+.itemR{
+    
+    text-decoration: none;
+    font-family: 'Varela Round', sans-serif;
+    color: chocolate;
+    cursor: pointer;
+    
+}
+.itemR:hover{
+
+    color: rgb(247, 194, 156)
     
 }
 .item a:hover{

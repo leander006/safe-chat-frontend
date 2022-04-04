@@ -1,9 +1,7 @@
 
-import Navbar from "./components/navbar/Navbar";
+
 import Login from "./components/Pages/Login/Login";
 import Register from "./components/Pages/Register/Register";
-
-import Chats from "./components/chats/Chats";
 import {
   BrowserRouter as Router,
   Routes,
@@ -19,7 +17,7 @@ import About from "./components/Pages/About/About";
 
 function App() {
   const {user} = useContext( Context);
-
+  console.log(user);
 
   return (
     <>
@@ -30,7 +28,7 @@ function App() {
      <Route exact path="/" element={user?<Home/>:<Login/>}/>
      <Route exact path="/login" element={<Login/>}/>
      <Route exact path="/register" element={<Register/>}/> 
-    <Route exact path="/about" element={<About/>}/> 
+    <Route exact path="/about" element={user?<About/>:<Login/>}/> 
   
     </Routes>
    </Router>

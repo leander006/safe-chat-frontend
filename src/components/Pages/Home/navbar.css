@@ -2,7 +2,7 @@ nav{
     
     display: flex;
     justify-content: space-between;
-   
+    background-color: #FFDDE1;
     font-family: 'Lora', serif;
 }
 #icon{
@@ -25,7 +25,6 @@ nav{
         width: 200px;
         display: flex;
         flex-direction: column;
-        position: absolute;
 
 }
 .navbar #center{
@@ -126,8 +125,5 @@ nav{
     .itemLeft{
         display: none;
     }
-    nav{
-        background-color: rgb(61, 1, 1);
-        height: 35px;
-    }
+
 }

@@ -34,7 +34,7 @@ const {user} = useContext( Context);
     {display?<i className="fa-solid  fa-xl fa-xmark"  id="closeicon" onClick={handleClose} ></i>: <i className="fa-solid fa-xl fa-bars " id={!display?"icon":""} onClick={handleClick}></i> }
         <div className='itemLeft' id="left">
        
-            <h1>Confessiom Room</h1>
+            <h1>Confession Room</h1>
         </div>
         <div className='itemCenter' id="center">
             <div className='item' id={display?"it":""}>
@@ -44,7 +44,7 @@ const {user} = useContext( Context);
             <div className='item'  id={display?"it":""}>
             <Link to="/about">ABOUT</Link>
             </div>
-            <div className='itemR' id={display?"it":""} onClick={handleLogout}>LOGOUT</div>
+            {user && <div className='itemR' id={display?"it":""} onClick={handleLogout}>LOGOUT</div>}
           
         
         </div>  

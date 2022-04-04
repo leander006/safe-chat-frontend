@@ -3,6 +3,49 @@
     margin: 0;
 }
 .about{
-    color: teal;
+    font-family: 'Varela Round', sans-serif;
+}
+.head{
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
     
 }
+.img{
+    width: 320px;
+    height: 400px;
+}
+.main{
+    margin-top: 20px;
+    color: teal;
+    display: flex;
+    justify-content: center; 
+}
+
+.socials{
+    display: flex;
+    justify-content:center;
+}
+
+.socialLinkedin{
+    color: rgb(72, 72, 240);
+    margin-right: 20px;
+    cursor: pointer;
+}
+ .socialGithub{
+     color: rgb(19, 17, 17);
+     cursor: pointer;
+ }
+ .socialLinkedin:hover{
+     color: rgb(197, 197, 241); ;
+ }
+ .socialGithub:hover{
+     color: rgb(233, 194, 194);
+ }
+
+ .contact{
+    color: rgb(3, 104, 65);
+    display: flex;
+    justify-content: center;
+ }
+

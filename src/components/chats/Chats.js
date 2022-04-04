@@ -1,3 +1,4 @@
+
 import React, { useContext, useEffect, useRef, useState } from 'react'
 
 import Message from '../Message/Message';
@@ -7,10 +8,10 @@ const axios = require('axios');
 const {Context} = require("../../context/ContextProvider")
 function Chats() {
     const [messages, setMessages] = useState([]);
-    const [newMessage, setNewMessage] = useState("")
+    const [newMessage, setNewMessage] = useState("");
     const [arrivalMessage, setArrivalMessage] = useState(null)
-    const [close, setClose] = useState(false);
-    // const scroll = useRef();
+
+    const scrollRef = useRef();
 
     const socket = useRef()
 
@@ -29,17 +30,16 @@ useEffect(() => {
 },[])
 
 useEffect(() => {
-    arrivalMessage &&
-    setMessages((prev) =>[...prev,arrivalMessage])
+    arrivalMessage && setMessages((prev) => [...prev, arrivalMessage]);
+
 }, [arrivalMessage])
 
 
 
     useEffect(() => {
         socket.current.emit("addUser",user.others?._id);
-        socket.current.on('getUser', users =>{
-})
-    },[user.others?._id])
+        socket.current.on('getUser', users =>{})
+},[user.others?._id])
     
     
 
@@ -47,16 +47,18 @@ useEffect(() => {
 //-----to get Message from DB-----//
     useEffect(() => {
         const getMessages = async() =>{
-    //     const config ={
-    //     headers:{
-    //       Authorization:`Bearer ${user.token}`
-    //     }
-    //   }
+        const config ={
+        headers:{
+            "Content-Type":"application/json",
+            Authorization:`Bearer ${user.token}`
+        }
+      }
             try {
                 
-                const message = await axios.get("http://localhost:4000/api/message");
-              setMessages(message.data);
-                // console.log(message.data);
+                const res= await axios.get("http://localhost:4000/api/message",config);
+             
+              setMessages(res.data);
+                
             } catch (error) {
                 console.log(error);
             }
@@ -74,41 +76,46 @@ useEffect(() => {
         {
             return;
         }
-        // const config ={
-        //     headers:{
-        //       Authorization:`Bearer ${user.token}`
-        //     }
-        //   }
-      
-
+        const config ={
+            headers:{
+                "Content-Type":"application/json",
+                Authorization:`Bearer ${user.token}`
+            }
+          }
         try 
            {
-            const message = await axios.post("http://localhost:4000/api/message",{
+            const res= await axios.post("http://localhost:4000/api/message",{
+                sender:user.others?._id,
+                text:newMessage,
+           },config);
+     
+            socket.current.emit("sendMessage",{
                 sender:user.others?._id,
                 text:newMessage,
             });
-        
-            socket.current.emit("sendMessage",{
-                sender:user.others._id,
-                text:newMessage,
-            });
-            setMessages([...messages,message.data])
-            setMessages("");  
+            // console.log(messages);
+            setMessages([...messages, res.data])
+            setNewMessage(""); 
         } catch (error) {
-            console.log(error);
+            console.log(error.message);
         }
-        
     }
+    useEffect(() => {
+        scrollRef.current?.scrollIntoView({behaviour:"smooth"})
+    },[messages])
   return (
 
      
     <div className="center">
     <div className='content'>
     <div className='chatTop' >
-        {messages?.map((m) =>(
-           
-            <Message message={m}  own={m?.sender?._id === user.others?._id}/>
+
+        { messages?.map((m) => (
+           <div ref={scrollRef}>
+            <Message message={m} key={m._id} own={m?.sender === user.others?._id}/>
+           </div>
         ))}
+
     </div>
     
     <div className='chatButtom'>

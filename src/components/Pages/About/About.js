@@ -1,26 +1,28 @@
 import React from 'react'
-
-import Navbar from '../../navbar/Navbar'
-import "./about.css"
+import Footer from '../../footer/Footer'
+import Navbar from '../../Navbar /Navbar'
+import './about.css'
 function About() {
   return (
+    <>
+    <Navbar/>
     <div className='about'>
-        <Navbar/>
-        <div className='head'>
-        <img className='img' src='/profile.jpeg' alt='leander'></img>
-        </div>
-    <div className='main'>
-      <p>Hi! i am Leander D'silva. I am a MERN stack developer. </p>
-    
+      <div className='about-upper'>
+          <img src='profile.jpg'></img>
+      </div>
+      <div className='about-lower'>
+      <h1>Hi i am LEANDER D'SILVA</h1>
+      <p>I am MERN stack developer.</p>
+      <p>I like to enchane my knowlegde and improve my skillset </p>
+      </div>
+      <div className='socials'>
+        <p> This is my github account do check it</p>
+     <a href='https://github.com/leander006' target="_blank"><i class="fa-brands fa-2xl fa-github"></i></a>
+     </div>
     </div>
-    <div className='contact'>
-      <p>Follow me on Linkedin and do check my Github </p>
-    </div>
-<div className='socials'>
-<i className="fa-brands fa-2xl fa-linkedin socialLinkedin" ></i>
-<i className="fa-brands fa-2xl  fa-github socialGithub"></i>
-</div>
-    </div>
+
+    <Footer/>
+    </>
   )
 }
 

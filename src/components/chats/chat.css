@@ -5,13 +5,13 @@
 .center{
     
     max-width: 90vw; 
-    height: 85vh;
+    height: calc(100vh - 150px);
     display: flex;
     
-   
-    margin: auto;
+    margin: 20px auto;
+
     border: 1px solid bisque;
-    background-color: rgb(230, 224, 224);
+    background-color: rgb(248, 232, 232);
     border-radius: 20px;
     
 }

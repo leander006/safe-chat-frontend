@@ -1,0 +1,44 @@
+footer{
+    
+    /* bottom: 0;
+    left: 0%; */
+    width: 100%;
+    display: flex;
+    background-color: rgb(24, 34, 34);
+    height: 60px;
+    justify-content: center;
+    flex-direction: column;
+}
+footer ul {
+    /* padding-top: 50px; */
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    list-style: none;
+}
+footer p{
+    text-align: center;
+    color: teal;
+}
+
+footer ul li{
+    margin-left: 20px;
+}
+.linkedin{
+       
+    cursor: pointer;
+    color: rgb(24, 55, 231);
+}
+.facebook{
+
+    cursor: pointer;
+    color: rgb(32, 101, 250);
+    
+    
+}
+.twitter{
+
+    cursor: pointer;
+    color: rgb(43, 195, 255);
+    
+}

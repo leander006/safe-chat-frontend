@@ -1,7 +1,9 @@
 
 import React, { useContext, useEffect, useRef, useState } from 'react'
+import Footer from '../footer/Footer';
 
 import Message from '../Message/Message';
+import Navbar from '../Navbar /Navbar';
 import './chat.css';
 const {io} = require('socket.io-client')
 const axios = require('axios');
@@ -16,6 +18,12 @@ function Chats() {
     const socket = useRef()
 
     const {user} = useContext(Context)
+    const config ={
+        headers:{
+            "Content-Type":"application/json",
+            Authorization:`Bearer ${JSON.parse(localStorage.getItem("userInfo"))?.token}`
+        }
+      }
     
 useEffect(() => {
     socket.current = io("ws://localhost:8900");
@@ -47,12 +55,7 @@ useEffect(() => {
 //-----to get Message from DB-----//
     useEffect(() => {
         const getMessages = async() =>{
-        const config ={
-        headers:{
-            "Content-Type":"application/json",
-            Authorization:`Bearer ${user.token}`
-        }
-      }
+      
             try {
                 
                 const res= await axios.get("http://localhost:4000/api/message",config);
@@ -65,7 +68,7 @@ useEffect(() => {
         };
         getMessages();
      
-    },[])
+    },[user,newMessage])
    
     //-------to create message from frontend--------//
  
@@ -76,16 +79,10 @@ useEffect(() => {
         {
             return;
         }
-        const config ={
-            headers:{
-                "Content-Type":"application/json",
-                Authorization:`Bearer ${user.token}`
-            }
-          }
+        
         try 
            {
             const res= await axios.post("http://localhost:4000/api/message",{
-                sender:user.others?._id,
                 text:newMessage,
            },config);
      
@@ -93,8 +90,8 @@ useEffect(() => {
                 sender:user.others?._id,
                 text:newMessage,
             });
-            // console.log(messages);
-            setMessages([...messages, res.data])
+            console.log(messages);
+            // setMessages([...messages, res.data])
             setNewMessage(""); 
         } catch (error) {
             console.log(error.message);
@@ -104,8 +101,8 @@ useEffect(() => {
         scrollRef.current?.scrollIntoView({behaviour:"smooth"})
     },[messages])
   return (
+<>
 
-     
     <div className="center">
     <div className='content'>
     <div className='chatTop' >
@@ -125,7 +122,7 @@ useEffect(() => {
     </div>
     </div>
 
-  
+    </>
   )
 }
 

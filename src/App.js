@@ -1,7 +1,7 @@
 
 
-import Login from "./components/Pages/Login/Login";
-import Register from "./components/Pages/Register/Register";
+import Login from "./components/Pages/login /Login";
+import Register from "./components/Pages/register /Register";
 import {
   BrowserRouter as Router,
   Routes,
@@ -10,8 +10,9 @@ import {
 import { useContext } from "react";
 import {  Context } from "./context/ContextProvider";
 import Home from "./components/Pages/Home/Home";
-import About from "./components/Pages/About/About";
-
+import About from "./components/Pages/about/About";
+// import Chats from "./components/chats/Chats";
+import Main from './components/Pages/main/Main'
 
 
 
@@ -25,10 +26,12 @@ function App() {
 
    <Router>
      <Routes> 
-     <Route exact path="/" element={user?<Home/>:<Login/>}/>
+       
+     <Route exact path="/" element={user?<Main/>:<Login/>}/>
      <Route exact path="/login" element={<Login/>}/>
      <Route exact path="/register" element={<Register/>}/> 
-    <Route exact path="/about" element={user?<About/>:<Login/>}/> 
+     <Route exact path="/chat" element={user?<Home/>:<Login/>}/> 
+     <Route exact path="/about" element={user?<About/>:<Register/>}/> 
   
     </Routes>
    </Router>

@@ -1,13 +1,18 @@
-import { useContext } from "react";
-import { Context } from "./context/ContextProvider";
-
+import { Routes, Route } from "react-router-dom";
+import Login from "./pages/Login";
+import Home from "./pages/Home";
+import Register from "./pages/Register";
+import { GetUser } from "./context/UserProvider";
 function App() {
-  const { user } = useContext(Context);
+  const { user } = GetUser();
   console.log(user);
-
   return (
     <>
-      <h1>hello</h1>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/" element={user ? <Home /> : <Login />} />
+      </Routes>
     </>
   );
 }

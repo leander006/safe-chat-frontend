@@ -5,6 +5,8 @@ import Register from "./pages/Register";
 import Room from "./pages/Room";
 import { GetUser } from "./context/UserProvider";
 import Create from "./pages/Create";
+import About from "./pages/About";
+import Users from "./pages/Users";
 function App() {
   const { user } = GetUser();
   return (
@@ -13,6 +15,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/" element={user ? <Home /> : <Login />} />
+        <Route path="/about" element={user ? <About /> : <Login />} />
+        <Route path="/user" element={user ? <Users /> : <Login />} />
         <Route path="/create" element={user ? <Create /> : <Login />} />
         <Route path="/room/:id" element={user ? <Room /> : <Login />} />
       </Routes>

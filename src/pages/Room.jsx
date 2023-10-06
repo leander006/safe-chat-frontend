@@ -103,6 +103,7 @@ function Room() {
   }, []);
   useEffect(() => {
     setUrl(id);
+    socket.emit("room:join", { roomId: id, user });
     socket.on("user:joined", handleUserJoined);
     socket.on("user:exists", handleUserExists);
     socket.on("incomming:call", handleIncommingCall);

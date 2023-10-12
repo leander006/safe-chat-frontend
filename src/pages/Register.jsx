@@ -41,7 +41,7 @@ function Register() {
     <div className="flex justify-center w-screen items-center h-screen">
       <div className="flex w-full justify-evenly ">  
       <div className="hidden md:flex justify-center items-center md:w-[60%] lg:w-1/2">
-            <img className="h-[400px] flex justify-center " src="/images/Register.png" alt="Register"  />
+            <img className="h-[400px] flex justify-center " src="/images/register.png" alt="Register"  />
         </div>  
       <div className="flex lg:w-1/2 md:w-[60%] justify-center items-center ">
           <div className="flex w-[91vw] bg-white rounded-lg lg:w-[400px]  md:w-[300px] md:justify-center">

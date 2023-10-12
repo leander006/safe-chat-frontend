@@ -33,11 +33,11 @@ function Home() {
           <h1 className="text-center">Check Out All Features</h1>
           <div className="grid md:grid-flow-col md:grid-cols-3 md:space-y-0 space-y-12">
             <div className=" flex flex-col items-center md:space-y-0 space-y-3">
-              <i class="fa-solid fa-2xl fa-lock"></i>
+              <i className="fa-solid fa-2xl fa-lock"></i>
               <h1 className="mt-4">End-to-End Encryption</h1>
             </div>
             <div className=" flex flex-col items-center md:space-y-0 space-y-3">
-              <i class="fa-solid fa-2xl fa-box-archive"></i>
+              <i className="fa-solid fa-2xl fa-box-archive"></i>
               <h1 className="mt-4">No Data Storage</h1>
             </div>
             <div className=" flex flex-col items-center md:space-y-0 space-y-3">

@@ -2,6 +2,7 @@ import React, { useCallback, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../utils/service";
 import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -16,13 +17,26 @@ function Register() {
           password: password,
           email:email
         });
+        toast.success("Email send for verification")
         navigate("/login")
       } catch (error) {
-        console.log(error);
+        toast.error(
+          error?.response?.data?.message
+            ? error?.response?.data?.message
+            : "Something went wrong"
+        );
+        console.log(error?.response?.data?.message);
       }
     },
     [username, password,email]
   );
+
+  const google = async (e) => {
+    e.preventDefault();
+    window.open(`${BASE_URL}/api/auth/google`, "_self");
+  };
+
+
   return (
     <div className="flex justify-center w-screen items-center h-screen">
       <div className="flex w-full justify-evenly ">  
@@ -31,7 +45,7 @@ function Register() {
         </div>  
       <div className="flex lg:w-1/2 md:w-[60%] justify-center items-center ">
           <div className="flex w-[91vw] bg-white rounded-lg lg:w-[400px]  md:w-[300px] md:justify-center">
-            <div className="flex flex-col w-full p-5">
+            <div className="flex flex-col w-full md:p-5 m-1">
               <h1 className=" text-xl md:mb-3 text-[#4229cb]">Register</h1>
               <form
                 className="flex justify-center flex-col item-center mt-4"
@@ -79,7 +93,7 @@ function Register() {
               </h1>
               <div className=" bg-[#4229cb] text-white flex rounded-lg hover:bg-[#6a4ef5] hover:border ">
                 <i className="fa-brands text-[#b4c1db] fa-2xl fa-google-plus-g m-auto pl-2"></i>
-                <button className=" w-full h-10">
+                <button onClick={google} className=" w-full h-10">
                   Register with google
                 </button>
               </div>

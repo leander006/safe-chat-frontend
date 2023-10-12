@@ -27,7 +27,7 @@ export const UserProvider = ({ children }) => {
 
   // Whenever userData changes, update the localStorage value
   useEffect(() => {
-    setUser(JSON.parse (localStorage.getItem("user")));
+    setUser(JSON.parse(localStorage.getItem("user")));
     setConfig({
       headers: {
         "Content-Type": "application/json",

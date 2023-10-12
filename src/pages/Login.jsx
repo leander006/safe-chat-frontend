@@ -1,13 +1,35 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../utils/service";
 import { GetUser } from "../context/UserProvider";
 import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const { setUser,setConfig } = GetUser();
   const navigate =useNavigate()
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get("token");
+  const data = JSON.parse(params.get("data"));
+
+  const getUser = useCallback(
+    () => {
+      if (token && data) {
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(data));
+        setUser(JSON.stringify(data))
+      }
+      
+    },
+    [data],
+  )
+  
+
+  useEffect(() => {
+    getUser();
+  }, [data]);
+
   const handleSubmit= useCallback(
     async (e) => {
       e.preventDefault();
@@ -26,12 +48,24 @@ function Login() {
           },
         });
         navigate("/")
+        toast.success("Login successfully")
       } catch (error) {
-        console.log(error);
+        toast.error(
+          error?.response?.data?.message
+            ? error?.response?.data?.message
+            : "Something went wrong"
+        );
+        console.log(error?.response?.data?.message);
       }
     },
     [username, password,setUser]
   );
+
+  const google = async (e) => {
+    e.preventDefault();
+    window.open(`${BASE_URL}/api/auth/google`, "_self");
+  };
+
   return (
     <div className="flex justify-center w-screen items-center h-screen">
       <div className="flex w-full justify-evenly ">  
@@ -78,7 +112,7 @@ function Login() {
               </h1>
               <div className=" bg-[#4229cb] text-white flex rounded-lg hover:bg-[#6a4ef5] hover:border ">
                 <i className="fa-brands text-[#b4c1db] fa-2xl fa-google-plus-g m-auto pl-2"></i>
-                <button className=" w-full h-10">
+                <button onClick={google} className=" w-full h-10">
                   Login with google
                 </button>
               </div>

@@ -11,8 +11,6 @@ import { useCallback, useEffect } from "react";
 import toast from "react-hot-toast";
 import Meeting from "./pages/Meeting";
 import Setting from "./pages/Setting";
-import axios from "axios";
-axios.defaults.withCredentials = true;
 function App() {
   const { user, setUser, setConfig } = GetUser();
   const navigate = useNavigate();

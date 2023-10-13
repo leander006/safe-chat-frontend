@@ -2,6 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "proxy": "https://safe-chat-1usy.onrender.com",
   "dependencies": {
     "axios": "^0.26.0",
     "crypto": "^1.0.1",

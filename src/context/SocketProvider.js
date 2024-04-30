@@ -14,6 +14,7 @@ export const SocketProvider = ({ children }) => {
   const socket = useMemo(() => io(Endpoint), []);
   const [notification, setNotification] = useState(false);
   const [messages, setMessages] = useState([]);
+  console.log("messages in ", messages);
   return (
     <SocketContext.Provider
       value={{ socket, notification, setNotification, messages, setMessages }}

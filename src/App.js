@@ -11,6 +11,7 @@ import { useCallback, useEffect } from "react";
 import toast from "react-hot-toast";
 import Meeting from "./pages/Meeting";
 import Setting from "./pages/Setting";
+import Chat from "./pages/Chat";
 function App() {
   const { user, setUser, setConfig } = GetUser();
   const navigate = useNavigate();
@@ -40,6 +41,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/chat" element={<Chat />} />
         <Route path="/" element={user ? <Home /> : <Login />} />
         <Route path="/user" element={user ? <Users /> : <Login />} />
         <Route path="/room" element={user ? <Room /> : <Login />} />

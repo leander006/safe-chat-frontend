@@ -24,7 +24,7 @@ function Home() {
           <h1 className=" md:text-5xl">Nurture trust with a loyal companion</h1>
           <Link
             className="hover:text-white bg-black/40 p-2 rounded-lg"
-            to="/user"
+            to="/chat"
           >
             Find your companion
           </Link>

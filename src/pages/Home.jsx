@@ -1,15 +1,16 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { useSocket } from "../context/SocketProvider";
-import { GetUser } from "../context/UserProvider";
-
+import { GetUser, UserContext } from "../context/UserProvider";
 function Home() {
   const { socket } = useSocket();
   const { user } = GetUser();
+  const peerJs = useContext(UserContext);
   useEffect(() => {
+    console.log("peerjs ", peerJs.peer);
     socket?.emit("join-socket", { userId: user?._id });
-  }, []);
+  }, [user, socket]);
 
   return (
     <>

@@ -1,89 +1,111 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useSocket } from "../context/SocketProvider";
-import { GetUser } from "../context/UserProvider";
+import { GetUser, UserContext } from "../context/UserProvider";
 import toast from "react-hot-toast";
 import Messages from "../components/Messages";
-import { v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from "uuid";
+import Navbar from "../components/Navbar";
+import Video from "../components/Video";
 
 function Chat() {
+  const { socket, messages, setMessages } = useSocket();
+  const [room, setRoom] = useState("");
+  const { user } = GetUser();
+  const contextData = useContext(UserContext);
+  const messagesEndRef = useRef(null);
+  const [message, setMessage] = useState("");
+  const [data, setData] = useState({
+    user: 0,
+    message: "",
+    room: "",
+  });
+  const join = useCallback(
+    async ({ roomId }) => {
+      setRoom(roomId);
+      console.log("joined in chat", contextData,user?.username);
+      socket.emit("send-stream", {
+        stream: contextData.stream,
+        roomId: roomId,
+        userId: user?.username,
+      });
+      toast.success("User joined room");
+      console.log("joined in chat", contextData);
+    },
+    [room, contextData,socket]
+  );
 
-      const { socket, messages, setMessages } = useSocket();
-      const [room, setRoom] = useState("")
-      const { user } = GetUser();
-      const messagesEndRef = useRef(null);
-      const [message, setMessage] = useState("");
-      const [data, setData] = useState({
-            user:0,
-            message:"",
-            room:""
-      })
-      const join = useCallback(async ({ roomId }) => {
-            setRoom(roomId)
-            // console.log("joined ",roomId);
-            toast.success("User joined room");
-      }, [room]);
+  const created = useCallback(
+    async ({ roomId }) => {
+      setRoom(roomId);
+      // console.log("created ",roomId);
+      toast.success("User created room");
+    },
+    [room]
+  );
 
-      const created = useCallback(async ({ roomId }) => {
-            setRoom(roomId)
-            // console.log("created ",roomId);
-            toast.success("User created room");
-      }, [room]);
+  console.log(contextData);
 
-      const sendMessage = useCallback(
-            (e) => {
-              e.preventDefault();
+  const sendMessage = useCallback(
+    (e) => {
+      e.preventDefault();
 
-              setData(user,message,room)
-            //   console.log("datass ",user,message,room);
-              setMessages([...messages,{user,message,room,id:uuidv4()}]);
-              socket.emit("send-message", {user,message,room});
-              setMessage("");
-            },
-            [message]
-          );
+      setData(user, message, room);
+      //   console.log("datass ",user,message,room);
+      setMessages([...messages, { user, message, room, id: uuidv4() }]);
+      socket.emit("send-message", { user, message, room });
+      setMessage("");
+    },
+    [message]
+  );
 
-          const scrollToBottom = () => {
-            if (messagesEndRef.current) {
-                messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-            }
-        };
-    
-        useEffect(() => {
-            scrollToBottom();
-        }, [messages]);
+  const scrollToBottom = () => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
-  const handleMessage = useCallback(async (data) => {
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
+  const handleStream = useCallback(async (data) => {
     console.log("data", data);
-    setMessages(data);
-
   }, []);
 
-      useEffect(() => {
-            socket?.emit("join-room",user);
-      },[]);
+  const handleMessage = useCallback(async (data) => {
+    console.log("data", data);
+    setMessages(data);
+  }, []);
 
-      useEffect(() => {
-            socket.on("user-created",created);
-            socket.on("user-joined",join);
-            socket.on("message-recieved", handleMessage);
-        return () => {
-            socket.off("user-created",created);
-            socket.off("user-joined",join);
-            socket.off("message-recieved", handleMessage);
-        };
-      });
-      
+  useEffect(() => {
+    socket?.emit("join-room", user);
+  }, []);
+
+  useEffect(() => {
+    socket.on("user-created", created);
+    socket.on("user-joined", join);
+    socket.on("message-recieved", handleMessage);
+    socket.on("stream-recieved", handleStream);
+    return () => {
+      socket.off("user-created", created);
+      socket.off("user-joined", join);
+      socket.off("message-recieved", handleMessage);
+      socket.off("stream-recieved", handleStream);
+    };
+  });
+
   return (
-    <div className="flex w-full md:mx-24 p-2 mt-6 h-[50%]">
-      <div className="bg-green-500 w-[60%]">
-dkd
-      </div>
-      <form
+    <>
+      <Navbar />
+      <div className="flex md:flex-row flex-col w-full md:px-3">
+        <div className="bg-green-500 w-full md:w-[60%] md:h-[calc(100vh-4.4rem)] h-[50vh] mt-16">
+          <Video stream={contextData?.stream} />
+        </div>
+        <form
           onSubmit={sendMessage}
-          className="mx-auto w-[40%]  bg-black/60"
+          className=" md:w-[40%] bg-black/60 md:mt-16"
         >
-          <div className="md:h-[calc(100vh-7.2rem)] h-[calc(100vh-17rem)] overflow-y-scroll">
+          <div className="md:h-[calc(100vh-7.2rem)] h-[34.5vh]  overflow-y-scroll">
             {messages?.map((u) => (
               <Messages key={u.id} u={u} />
             ))}
@@ -103,8 +125,9 @@ dkd
             </button>
           </div>
         </form>
-    </div>
-  )
+      </div>
+    </>
+  );
 }
 
-export default Chat
+export default Chat;

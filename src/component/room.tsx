@@ -1,45 +1,61 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import { NavBar } from './Navbar';
 
 function Room() {
-    const [username, setUsername] = useState("");
     const [roomId, setRoomId] = useState("");
     const navigate = useNavigate();
+
+  const createRoom = () => {
+    const newRoomId = Math.random().toString(36).substring(2, 15);
+    navigate(`/room/${newRoomId}`);
+  }
+
+const joinRoom = () => {
+  if (roomId) {
+      navigate(`/room/${roomId}`);
+    } else {
+      alert("Please enter a valid Room ID");
+    }
+  }
   return (
-    <main className="main-container">
-    <section className="flex flex-col items-center">
-      <div className="username-input mb-4">
-        <input
-          className="bg-gray-200 p-2 rounded-md"
-          type="text"
-          placeholder="Enter Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <br />
-        <input
-          className="bg-gray-200 p-2 rounded-md"
-          type="text"
-          placeholder="Enter roomId"
-          value={roomId}
-          onChange={(e) => setRoomId(e.target.value)}
-        />
-        <button
-          className="bg-blue-500 text-white p-2 rounded-md ml-2"
-            onClick={() => {
-                if (!username) {
-                    return
-                } else {
-                localStorage.setItem("username", username);
-                navigate("/room/" + roomId);
-                }
-            } }
-        >
-          Join Room
-        </button>
+    <div className="h-screen w-screen flex flex-col">
+      <NavBar/>
+      <div className="h-[90%] w-full flex flex-col md:flex-row">
+        <div className="w-full h-full flex items-center justify-center bg-gray-200">
+          <form className="md:w-[50vw] xl:w-[40vw] h-1/2 p-6 rounded-lg ">
+            <div className="bg-white p-8 rounded-lg shadow-md">
+              <h1 className="text-2xl text-[#4E71FF] font-bold mb-4 text-center">Welcome to Video Call App</h1>
+              <button 
+                onClick={(e) => {
+                  e.preventDefault();
+                  createRoom();
+                }}
+                className="w-full bg-[#5409DA] cursor-pointer text-white py-2 px-4 rounded hover:bg-[rgba(89,9,218,0.9)]"
+              >
+                Create Room
+              </button>
+              <div className="my-4 ">
+                <input 
+                  type="text" 
+                  placeholder="Enter Room ID" 
+                  value={roomId} 
+                  onChange={(e) => setRoomId(e.target.value)} 
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+                </div>
+              <button 
+                onClick={joinRoom} 
+                className="w-full bg-[#5409DA] cursor-pointer text-white py-2 px-4 rounded hover:bg-[rgba(89,9,218,0.9)]"
+              >
+                Join Room
+              </button>
+            </div>
+          </form>
+        </div>
+      
       </div>
-    </section>
-  </main>
+    </div>
   )
 }
 

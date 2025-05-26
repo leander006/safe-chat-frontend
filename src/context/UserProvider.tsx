@@ -5,10 +5,11 @@ import  {
   useState,
   type ReactNode,
 } from "react";
+import Cookies from "js-cookie";
 
 interface UserContextType {
-  user: unknown;
-  setUser: React.Dispatch<unknown>;
+  user: string | null;
+  setUser: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 export const UserContext = createContext<UserContextType | null>(null);
@@ -20,18 +21,13 @@ export const GetUser = () => {
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const initialUserData = useMemo(() => {
-    const userDataFromLocalStorage = localStorage?.getItem("user");
-    return userDataFromLocalStorage
-      ? JSON.parse(userDataFromLocalStorage)
+    const user = Cookies.get("user");
+    return user
+      ?JSON.parse(user)
       : null;
   }, []);
 
-  // User state that can be updated in the future
-  const [user, setUser] = useState(initialUserData);
-  // const [peer, setPeer] = useState(null);
-  // const [stream, setStream] = useState();
-  // const [config, setConfig] = useState(null);
-
+  const [user, setUser] = useState<string | null>(initialUserData);
   return (
     <UserContext.Provider
       value={{ user, setUser }}

@@ -7,6 +7,7 @@ import { FaMicrophone } from "react-icons/fa";
 import { AiTwotoneCamera } from "react-icons/ai";
 import { FaMicrophoneSlash } from "react-icons/fa";
 import { MdCallEnd } from "react-icons/md";
+import { GetUser } from "../context/UserProvider";
 
 
 const Demo = () => {
@@ -17,7 +18,11 @@ const Demo = () => {
   const [cameraOn, setCameraOn] = useState(true);
   const { roomId } = useParams();
   const navigate = useNavigate();
-  const username = localStorage.getItem("username");
+  const userContext = GetUser();
+
+  // @ts-ignore
+  const username = userContext ? userContext.user?.username : null;
+
   const socketContext = useSocket();
   const socket = socketContext;
 
@@ -107,7 +112,7 @@ const Demo = () => {
     if (remoteVideoRef.current) {
       remoteVideoRef.current.srcObject = remoteStream;
     }
-
+    navigate('/room');
   }, []);
 
   const handleRoomFull = useCallback(async({ message}: { message: string}) => {
@@ -133,6 +138,7 @@ const Demo = () => {
     }
     navigate('/room');
   }, []);
+
   const toggleMic = async () => {
     setmicOn(!micOn);
     if (localVideoRef.current) {
@@ -172,8 +178,6 @@ const Demo = () => {
 
     };
   }, [handleIceCandidates, handleIncomingAnswer, handleIncomingCall, handleUserJoined, handleUserLeft,socket]);
-
-  console.log(remoteVideoRef?.current ," and ", remoteVideoRef?.current?.srcObject," userStream ",userStream);
   
   
   return (
@@ -181,23 +185,25 @@ const Demo = () => {
       <div className="flex flex-col items-center">
 
         <div className="grid  ">
-          <div className={!userStream ?"w-screen h-screen overflow-hidden absolute":"w-1/4 h-1/4 absolute"}>
-            <video
-              ref={localVideoRef}
-              autoPlay
-              playsInline
-              className="w-full"
-            ></video>
-          </div>
-
-          <div className="h-screen w-screen  overflow-hidden ">
+          <div className={`${userStream ? "absolute " : "absolute w-full h-full top-0 left-0"} top-0 left-0`}>
+            <div className="w-full h-full">
               <video
-              ref={remoteVideoRef}
-              autoPlay
-              playsInline
-              className="w-full "
-              ></video>
-
+                ref={localVideoRef}
+                autoPlay
+                playsInline
+                className="w-full h-full object-cover">
+              </video>
+            </div>
+          </div>
+          <div className={`absolute w-full h-full top-0 left-0`}>
+            <div className="w-full h-full">
+            <video
+                ref={remoteVideoRef}
+                autoPlay
+                playsInline
+                className="w-full h-full object-cover">
+            </video>
+            </div>
           </div>
         </div>
 
@@ -221,6 +227,8 @@ const Demo = () => {
          </div>
         </div>
       </div>
+
+      
   );
 };
 

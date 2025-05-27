@@ -185,7 +185,7 @@ const Demo = () => {
       <div className="flex flex-col items-center">
 
         <div className="grid  ">
-          <div className={`${userStream ? "absolute " : "absolute w-full h-full top-0 left-0"} top-0 left-0`}>
+          <div className={`${userStream ? "absolute w-24 h-24 md:w-52 md:h-52 lg:w-64 lg:h-64" : "absolute w-full h-full top-0 left-0"} top-0 left-0`}>
             <div className="w-full h-full">
               <video
                 ref={localVideoRef}
@@ -195,7 +195,7 @@ const Demo = () => {
               </video>
             </div>
           </div>
-          <div className={`absolute w-full h-full top-0 left-0`}>
+          <div className={` w-screen h-screen top-0 left-0`}>
             <div className="w-full h-full">
             <video
                 ref={remoteVideoRef}

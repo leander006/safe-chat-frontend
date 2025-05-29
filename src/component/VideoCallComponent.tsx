@@ -10,7 +10,7 @@ import { MdCallEnd } from "react-icons/md";
 import { GetUser } from "../context/UserProvider";
 
 
-const Demo = () => {
+const VideoCallComponent = () => {
   const localVideoRef = useRef<HTMLVideoElement | null>(null);
   const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
   const [userStream, setuserStream] = useState(false);
@@ -232,7 +232,7 @@ const Demo = () => {
   );
 };
 
-export default Demo;
+export default VideoCallComponent;
 
 
 

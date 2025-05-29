@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { NavBar } from './Navbar';
+import NavBar from './Navbar';
 
 function Room() {
     const [roomId, setRoomId] = useState("");
@@ -21,7 +21,7 @@ const joinRoom = () => {
   return (
     <div className="h-screen w-screen flex flex-col">
       <NavBar/>
-      <div className="h-[90%] w-full flex flex-col md:flex-row">
+      <div className="h-full w-full flex flex-col md:flex-row">
         <div className="w-full h-full flex items-center justify-center bg-gray-200">
           <form className="md:w-[50vw] xl:w-[40vw] h-1/2 p-6 rounded-lg ">
             <div className="bg-white p-8 rounded-lg shadow-md">
@@ -39,7 +39,7 @@ const joinRoom = () => {
                 <input 
                   type="text" 
                   placeholder="Enter Room ID" 
-                  value={roomId} 
+                  value={roomId}
                   onChange={(e) => setRoomId(e.target.value)} 
                   className="w-full p-2 border border-gray-300 rounded"
                 />

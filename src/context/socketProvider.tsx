@@ -14,6 +14,7 @@ const SocketContext = createContext<Socket | null>(null);
 const ConnectionStatusContext = createContext({
   isConnected: true,
   error: false,
+  onlineUser:[]
 });
 
 export const useSocket = () => {
@@ -32,6 +33,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
   const Endpoint = `${BASE_URL}/`;
   const [isConnected, setIsConnected] = useState(true);
   const [error, setError] = useState(false);
+  const [onlineUser, setOnlineUser] = useState([])
 
   const socket = useMemo(() => {
     const newSocket = io(Endpoint, {
@@ -61,14 +63,18 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
   }, [Endpoint]);
 
   useEffect(() => {
-    return () => {
-      socket.disconnect(); // Cleanup the socket on unmount
-    };
+    socket.on("updated-users", (users) => {
+      console.log("Online users received:",users);
+      setOnlineUser(users);
+    });
+    socket.on("update-user", (message) => {
+      console.log("message is ", message);
+    });
   }, [socket]);
 
   return (
     <SocketContext.Provider value={socket}>
-      <ConnectionStatusContext.Provider value={{ isConnected, error }}>
+      <ConnectionStatusContext.Provider value={{ isConnected, error, onlineUser}}>
         {children}
       </ConnectionStatusContext.Provider>
     </SocketContext.Provider>

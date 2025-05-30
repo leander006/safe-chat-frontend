@@ -19,8 +19,7 @@ const NavBar = () => {
   const navigate = useNavigate();
   const logout = useCallback((e:any) => {
       e.preventDefault();
-      localStorage.removeItem("user");
-      localStorage.removeItem("token");
+      localStorage.removeItem("isLoggedIn");
       Cookies.remove("user");
       Cookies.remove("authToken");
       userContext?.setUser(null);

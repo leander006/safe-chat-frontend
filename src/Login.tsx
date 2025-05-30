@@ -5,12 +5,13 @@ import ErrorPage from "./component/ErrorPage";
 
 const Login: React.FC = () => {
   const { isConnected } = useConnectionStatus();
-
   const google = async (e:any) => {
     e.preventDefault();
     window.open(`http://localhost:3001/api/auth/google`, "_self");
   };
 
+  console.log("Connection status in Login:", isConnected);
+  
   return (
     <>
       {isConnected ? (

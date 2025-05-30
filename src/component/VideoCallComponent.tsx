@@ -22,6 +22,7 @@ const VideoCallComponent = () => {
 
   // @ts-ignore
   const username = userContext ? userContext.user?.username : null;
+  console.log(`username: ${username} roomId: ${roomId}`);
 
   const socketContext = useSocket();
   const socket = socketContext;
@@ -174,8 +175,6 @@ const VideoCallComponent = () => {
       socket.off('incoming:candidate',handleIceCandidates)
       socket.off('user-left',handleUserLeft)
       socket.off('room-full',handleRoomFull)
-
-
     };
   }, [handleIceCandidates, handleIncomingAnswer, handleIncomingCall, handleUserJoined, handleUserLeft,socket]);
   

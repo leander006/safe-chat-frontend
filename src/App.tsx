@@ -14,10 +14,10 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/history" element={user?<History/>:<Login/>} />
+        <Route path="/history" element={<History/>} />
         <Route path="/profile" element={user?<Profile/>:<Login/>} />
-        <Route path="/room/:roomId" element={user?<VideoCallComponent/>:<Login/>} />
-        <Route path="/call" element={user?<Call/>:<Login/>} />
+        <Route path="/room/:roomId" element={<VideoCallComponent/>} />
+        <Route path="/call" element={<Call/>} />
         <Route path="/room" element={user?<Room/>:<Login/>} />
         <Route path="/" element={!user?<Login/>:<Room/>} />
       </Routes>

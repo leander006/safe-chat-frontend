@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import NavBar from './Navbar';
-import { useSocket } from '../context/socketProvider';
-import { GetUser } from '../context/UserProvider';
+import NavBar from './component/Navbar';
+import { useSocket } from './context/socketProvider';
+import { GetUser } from './context/UserProvider';
 
 function Room() {
     const [roomId, setRoomId] = useState("");
@@ -13,22 +13,18 @@ function Room() {
     const socket = socketContext;
   const createRoom = () => {
     const newRoomId = Math.random().toString(36).substring(2, 15);
-    navigate(`/room/${newRoomId}`);
+    navigate(`/video/${newRoomId}`);
   }
 
 const joinRoom = () => {
   if (roomId) {
-      navigate(`/room/${roomId}`);
+      navigate(`/video/${roomId}`);
     } else {
       alert("Please enter a valid Room ID");
     }
   }
-  useEffect(() => { 
-    const isAlreadyLoggedIn = localStorage.getItem("isLoggedIn");
-    if (!isAlreadyLoggedIn) {
-      socket.emit("user-login", {user});
-      localStorage.setItem("isLoggedIn", "true");
-    }
+  useEffect(() => {     
+      socket.emit("user-login",user);
   }, [socket]);  
   return (
     <div className="h-screen w-screen flex flex-col">

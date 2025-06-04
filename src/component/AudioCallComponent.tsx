@@ -1,21 +1,20 @@
 import { useRef, useEffect, useCallback, useState } from "react";
-import { useSocket } from "../context/socketProvider";
+import { useConnectionStatus, useSocket } from "../context/socketProvider";
 import { useNavigate, useParams } from "react-router-dom";
 import peer from "../utils/peer";
-import { FiCameraOff } from "react-icons/fi";
 import { FaMicrophone } from "react-icons/fa";
-import { AiTwotoneCamera } from "react-icons/ai";
 import { FaMicrophoneSlash } from "react-icons/fa";
 import { MdCallEnd } from "react-icons/md";
 import { GetUser } from "../context/UserProvider";
+import NavBar from "./Navbar";
+import CallAnimation from "./CallAnimation";
 
 
-const VideoCallComponent = () => {
+const AudioCallComponent = () => {
   const localVideoRef = useRef<HTMLVideoElement | null>(null);
   const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
-  const [userStream, setuserStream] = useState(false);
   const [micOn, setmicOn] = useState(true)
-  const [cameraOn, setCameraOn] = useState(true);
+  const { from,to,setTo ,setFrom} = useConnectionStatus();
   const { roomId } = useParams();
   const navigate = useNavigate();
   const userContext = GetUser();
@@ -28,7 +27,7 @@ const VideoCallComponent = () => {
 
   const startMyVideo = async () => {
     try {
-      const localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+      const localStream = await navigator.mediaDevices.getUserMedia({ audio: true});
       if (localVideoRef.current) {
         localVideoRef.current.srcObject = localStream;
       }
@@ -42,12 +41,10 @@ const VideoCallComponent = () => {
 
 
   const createPeerConnection = useCallback(async({ id }: { id: string }) => {  
-    const localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+    const localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
     if (localVideoRef.current) {
       localVideoRef.current.srcObject = localStream;
     }
-
-    setuserStream(true);
     const remoteStream = new MediaStream();
     if (remoteVideoRef.current) {
       remoteVideoRef.current.srcObject = remoteStream;
@@ -76,7 +73,6 @@ const VideoCallComponent = () => {
 
   const handleUserJoined = useCallback(async({ username, id }: { username: string; id: string }) => {
     await createPeerConnection({ id });
-    setuserStream(true)
     const offer =  await peer.getOffer();
     if(socket){
       socket.emit("user:offer", { to:id, offer });
@@ -102,19 +98,20 @@ const VideoCallComponent = () => {
     }
   }, []);
 
-  const handleUserLeft = useCallback(async({ username, id }: { username: string; id: string }) => {
-    setuserStream(false);
+  const handleUserLeft = useCallback(async() => {
     const remoteStream = new MediaStream();
     if (remoteVideoRef.current) {
       remoteVideoRef.current.srcObject = remoteStream;
     }
+    setTo(null);
+    setFrom(null); // Clear the 'from' state  
+    console.log(`setting to undefined ${to}`);
     navigate('/room');
   }, []);
 
   const handleRoomFull = useCallback(async({ message}: { message: string}) => {
     alert(message);
     navigate('/room');
-
   }, []);
 
   const endCall = useCallback(async() => {
@@ -128,6 +125,15 @@ const VideoCallComponent = () => {
       }
       if (localVideoRef.current) {
         localVideoRef.current.srcObject = localStream;
+      }
+      if(from){
+        socket.emit("call-rejected", { to:from });
+        setFrom(null); // Clear the 'from' state
+      }
+      if(to){
+         setTo(null);
+         console.log(`setting to undefined `,to);
+         
       }
     }
     navigate('/room');
@@ -143,15 +149,6 @@ const VideoCallComponent = () => {
     }
   }
 
-  const toggleCamera = async () => {
-    setCameraOn(!cameraOn);
-    if (localVideoRef.current) {
-      const stream = localVideoRef.current.srcObject as MediaStream;
-      stream.getVideoTracks().forEach((track) => {
-        track.enabled = !track.enabled;
-      });
-    }
-  }
   useEffect(() => {
     startMyVideo();
     socket.on("user-joined", handleUserJoined);
@@ -170,61 +167,46 @@ const VideoCallComponent = () => {
       socket.off('room-full',handleRoomFull)
     };
   }, [handleIceCandidates, handleIncomingAnswer, handleIncomingCall, handleUserJoined, handleUserLeft,socket]);
-  
+    
   
   return (
 
-      <div className="flex flex-col items-center">
-
-        <div className="grid  ">
-          <div className={`${userStream ? "absolute w-24 h-24 md:w-52 md:h-52 lg:w-64 lg:h-64" : "absolute w-full h-full top-0 left-0"} top-0 left-0`}>
-            <div className="w-full h-full">
-              <video
-                ref={localVideoRef}
-                autoPlay
-                playsInline
-                className="w-full h-full object-cover">
-              </video>
-            </div>
-          </div>
-          <div className={` w-screen h-screen top-0 left-0`}>
-            <div className="w-full h-full">
-            <video
-                ref={remoteVideoRef}
-                autoPlay
-                playsInline
-                className="w-full h-full object-cover">
-            </video>
-            </div>
+    <div className="h-screen w-screen flex flex-col">
+    <NavBar/>
+    {/* <div className="h-full w-full flex flex-col"> */}
+      <div className="w-full h-full flex justify-center bg-gray-200">
+        <div className="p-6 rounded-lg flex flex-col justify-center">
+          <div className="bg-[#5409DA] p-8 rounded-lg shadow-md h-[calc(100vh-8rem)] md:w-[500px] w-[calc(100vw-3rem)]  flex flex-col items-center space-y-4 justify-center">
+              <audio ref={localVideoRef} autoPlay />
+              <audio ref={remoteVideoRef} autoPlay />
+              {from && 
+                <CallAnimation user1={from}/>
+              }
+              {to && 
+              <CallAnimation user1={to}/>
+              }
+              <div className="text-[#8DD8FF] flex space-x-2">
+                  <div className="cursor-pointer" onClick={toggleMic}>
+                  {!micOn ? (
+                      <FaMicrophoneSlash fontSize={'32'}/>
+                    ) : (
+                      <FaMicrophone  fontSize={'32'} />
+                  )}
+                  </div>
+                  <div onClick={endCall} className="cursor-pointer">
+                    <MdCallEnd fontSize={"32"} />
+                  </div>
+              </div>
           </div>
         </div>
-
-        <div className="flex items-center space-x-12 absolute bottom-2">
-          <div className="cursor-pointer" onClick={toggleMic}>
-          {!micOn ? (
-            <FaMicrophoneSlash color="blue" fontSize={'32'}/>
-          ) : (
-            <FaMicrophone color="blue"  fontSize={'32'} />
-          )}
-          </div>
-          <div className="cursor-pointer" onClick={toggleCamera}>
-          {!cameraOn ? (
-            <FiCameraOff color="blue"  fontSize={'38'}/>
-          ) : (
-            <AiTwotoneCamera color="blue"  fontSize={'38'}/>
-         )}
-        </div>
-         <div onClick={endCall} className=" cursor-pointer">
-         <MdCallEnd color="blue" fontSize={'38'} />
-         </div>
-        </div>
-      </div>
+    </div>
+  </div>
 
       
   );
 };
 
-export default VideoCallComponent;
+export default AudioCallComponent;
 
 
 

@@ -1,12 +1,17 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { GetUser } from "./context/UserProvider";
 import NavBar from "./component/Navbar";
+import { useConnectionStatus, useSocket } from "./context/socketProvider";
 const Profile: React.FC = () => {
      const userContext = GetUser();
+     const { isConnected } = useConnectionStatus();
      const user = userContext?.user;
-     console.log("user in profile", user);
-    
+     const socketContext = useSocket();
+     const socket = socketContext;
+     useEffect(() => {     
+        socket.emit("user-login",user);
+    }, [socket]);  
   return (
     <div className="h-screen w-screen flex flex-col">
       <NavBar/>

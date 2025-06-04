@@ -1,44 +1,65 @@
 
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import NavBar  from "./component/Navbar";
-import { useSocket } from "./context/socketProvider";
+import { useConnectionStatus, useSocket } from "./context/socketProvider";
+import { GetUser } from "./context/UserProvider";
+import UserInfo from "./component/User";
+import type { User } from "./utils/types";
+
 
 const Call: React.FC = () => {
-  const [username, setUsername] = useState<string>("");
+  const [updatedusers, setupdatedUsers] = useState<User[]>([]);
+  const userContext = GetUser();
+  const user = userContext?.user;
+  const { isConnected } = useConnectionStatus();
   const socketContext = useSocket();
   const socket = socketContext;
+  useEffect(() => {     
+    socket.emit("user-login",user);
+    socket.emit('get-update',user);
+}, [socket]);  
 
-  const registerUser = (e:any) => {
-    e.preventDefault(); // Prevent form submission
-    localStorage.setItem("username", username); // Store username in localStorage
-    console.log("Registering user with username:", username);
-    if (socket&& username) {
-      console.log("Registering user:", username);
-      socket.emit("user-login", username); // Send username to server
-    }
-  };
+
+//@ts-ignore
+const handleUpdatedList = useCallback(async( users ) => {
+  setupdatedUsers(users as User[]);
+}, [socket]);
+
+useEffect(() => {
+  socket.on("updateUserList",handleUpdatedList)
+  return () =>{
+    socket.off("updateUserList",handleUpdatedList)
+  }
+}, []);
+
+
 
   return (
     <div className="h-screen w-screen flex flex-col">
       <NavBar/>
       <div className="h-full w-full flex flex-col md:flex-row">
         <div className="w-full h-full flex items-center justify-center bg-gray-200">
-          <form className="md:w-1/4 h-1/2 p-6 rounded-lg ">
-            <div className="bg-white p-8 rounded-lg shadow-md">
-              <h1 className="text-2xl text-[#4E71FF] font-bold mb-4 text-center">Call</h1>
+          <div className="md:w-2/3 h-1/2 p-0.5 rounded-lg ">
+            <div className="bg-[#5409DA] p-5 rounded-lg shadow-md">
+              {updatedusers.length ===1 && updatedusers[0].id === user?.id 
+              && (
+                <h1 className="text-2xl text-[#BBFBFF] font-bold mb-4 text-center">No users available for call</h1>
+              )}
               <div className="mb-4">
-                <label htmlFor="username" className="block text-gray-700 mb-2">Username</label>
-                <input
-                  type="text"
-                  id="username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded"
-                />
-                <button onClick={registerUser}>Jion</button>
+                {updatedusers.length > 0 && (
+                  <ul className="text-lg text-gray-600">
+                    {updatedusers.map((u) => (
+                      <li key={u.id} className="mb-2">
+                       {u.id !== user?.id && 
+                       <UserInfo user={u} />
+                       }
+                      </li>
+                    ))}
+                  </ul>
+                )}
                 </div>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </div>

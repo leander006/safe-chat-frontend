@@ -10,7 +10,8 @@ import AudioCallComponent from './component/AudioCallComponent'
 import type { User } from './utils/types'
 import { useConnectionStatus } from './context/socketProvider'
 import ErrorPage from './component/ErrorPage'
-import OutgoingCall from './OutGoingCall'
+import OutgoingCall from './OutgoingCall'; // Correct
+
 function App() {
   const user :User|any = GetUser();
   const { isConnected } = useConnectionStatus();

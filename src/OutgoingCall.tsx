@@ -31,8 +31,8 @@ function OutgoingCall() {
       clearTimeout(timeoutId);
     };
   }, [to]);
+
   return (
-    
     <div className="h-screen w-screen flex flex-col">
     <NavBar/>
       <div className="w-full h-full flex justify-center bg-gray-200">

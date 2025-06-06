@@ -2,7 +2,7 @@ import { useCallback, useContext, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { FaBars } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
-import { GetUser, UserContext } from "../context/UserProvider";
+import { UserContext } from "../context/UserProvider";
 import Cookies from "js-cookie";
 import { useSocket} from "../context/socketProvider";
 

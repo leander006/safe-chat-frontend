@@ -6,11 +6,11 @@ import Call from './Call'
 import Login from './Login'
 import Room from './Room'
 import IncomingCall from './IncomingCall'
-import OutgoingCall from './OutGoingCall'
 import AudioCallComponent from './component/AudioCallComponent'
 import type { User } from './utils/types'
 import { useConnectionStatus } from './context/socketProvider'
 import ErrorPage from './component/ErrorPage'
+import OutgoingCall from './OutGoingCall'
 function App() {
   const user :User|any = GetUser();
   const { isConnected } = useConnectionStatus();
@@ -21,10 +21,10 @@ function App() {
       ):
       <Routes>
         <Route path="/profile" element={user?<Profile/>:<Login/>} />
-        <Route path="/video/:roomId" element={<VideoCallComponent/>} />
+        <Route path="/video/:roomId" element={user?<VideoCallComponent/>:<Login/>} />
         <Route path="/audio/:roomId" element={user?<AudioCallComponent/>:<Login/>} />
         <Route path="/call" element={user?<Call/>:<Login/>} />
-        <Route path="/room" element={<Room/>} />
+        <Route path="/room" element={user?<Room/>:<Login/>} />
         <Route path="/incomingCall/:roomId" element={user?<IncomingCall/>:<Login/>} />
         <Route path="/outgoingCall/:roomId" element={user?<OutgoingCall/>:<Login/>} />
         <Route path="/" element={!user?<Login/>:<Room/>} />

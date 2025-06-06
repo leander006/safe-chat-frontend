@@ -6,7 +6,6 @@ import  {
   type ReactNode,
 } from "react";
 import Cookies from "js-cookie";
-import type { User } from "../utils/types";
 
 interface UserContextType {
   user: string | null;

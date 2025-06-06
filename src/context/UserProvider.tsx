@@ -6,6 +6,7 @@ import  {
   type ReactNode,
 } from "react";
 import Cookies from "js-cookie";
+import type { User } from "../utils/types";
 
 interface UserContextType {
   user: string | null;
@@ -15,7 +16,11 @@ interface UserContextType {
 export const UserContext = createContext<UserContextType | null>(null);
 
 export const GetUser = () => {
-  const user = useContext(UserContext);
+  const context = useContext(UserContext);
+  if (!context) {
+    throw new Error("GetUser must be used within a UserProvider");
+  }
+  const user = context.user;
   return user;
 };
 

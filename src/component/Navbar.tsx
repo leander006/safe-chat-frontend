@@ -1,8 +1,8 @@
-import { useCallback, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { FaBars } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
-import { GetUser } from "../context/UserProvider";
+import { GetUser, UserContext } from "../context/UserProvider";
 import Cookies from "js-cookie";
 import { useSocket} from "../context/socketProvider";
 
@@ -14,11 +14,11 @@ const NavBar = () => {
   ];
 
   const [nav, setNav] = useState(false);
-  const userContext = GetUser();
-  const user = userContext ? userContext.user : null;
+  const userContext = useContext(UserContext)
+  const user = userContext?.user
   const navigate = useNavigate();
-  const socketContext = useSocket();
-  const socket = socketContext;
+  const socket = useSocket();
+
   const logout = useCallback(async(e:any) => {
       e.preventDefault();
       Cookies.remove("user");
@@ -31,7 +31,7 @@ const NavBar = () => {
   return (
     <div className="flex justify-between items-center bg-[#5409DA] w-full shadow-xl z-50 fixed h-12">
       <div>
-        <h1 className="ml-2 text-[#8DD8FF] text-4xl font-Blaka">FreeChat</h1>
+        <Link to={"/"} className="ml-2 text-[#8DD8FF] text-4xl font-Blaka">FreeChat</Link>
       </div>
 
       <ul className="hidden md:flex">
@@ -95,7 +95,7 @@ const NavBar = () => {
                 </li>
               ))}
             {user && 
-                <li onClick={logout} className="text-[#8DD8FF] mx-4 font-medium capitalize cursor-pointer hover:scale-125 duration-300">
+                <li onClick={logout} className="text-[#8DD8FF] mx-4  py-4 font-medium capitalize cursor-pointer hover:scale-125 duration-300">
                     <h1>logout</h1>
                 </li>}
             </div>

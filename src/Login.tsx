@@ -1,20 +1,13 @@
 import React from "react";
 import NavBar from "./component/Navbar";
-import { useConnectionStatus } from "./context/socketProvider";
-import ErrorPage from "./component/ErrorPage";
 
 const Login: React.FC = () => {
-  const { isConnected } = useConnectionStatus();
   const google = async (e:any) => {
     e.preventDefault();
     window.open(`http://localhost:3001/api/auth/google`, "_self");
   };
-
-  console.log("Connection status in Login:", isConnected);
   
   return (
-    <>
-      {isConnected ? (
         <div className="h-screen w-screen flex flex-col">
           <NavBar />
           <div className="h-full w-full flex flex-col md:flex-row">
@@ -32,17 +25,15 @@ const Login: React.FC = () => {
                 </div>
               </form>
             </div>
-            <div className="hidden md:flex w-1/2 h-full">
+            <div className="hidden lg:flex w-1/2 h-full">
               <img
                 src="/login.png" 
                 alt="Login Illustration"
-                className="w-full h-full object-cover"
+                className="w-full h-full "
               />
             </div>
           </div>
         </div>
-      ) : <ErrorPage onRetry={() => window.location.reload()} />}
-    </>
   );
 };
 

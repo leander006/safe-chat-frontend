@@ -8,6 +8,10 @@ import { AiTwotoneCamera } from "react-icons/ai";
 import { FaMicrophoneSlash } from "react-icons/fa";
 import { MdCallEnd } from "react-icons/md";
 import { GetUser } from "../context/UserProvider";
+import { IoMdPersonAdd } from "react-icons/io";
+import { HOST_URL } from "../utils/service";
+import type { User } from "../utils/types";
+import { toast } from 'react-toastify';
 
 
 const VideoCallComponent = () => {
@@ -18,22 +22,26 @@ const VideoCallComponent = () => {
   const [cameraOn, setCameraOn] = useState(true);
   const { roomId } = useParams();
   const navigate = useNavigate();
-  const userContext = GetUser();
-
-  // @ts-ignore
-  const username = userContext ? userContext.user?.username : null;
-
-  const socketContext = useSocket();
-  const socket = socketContext;
-
+  const user :User|any = GetUser();   
+  const socket = useSocket();
+  const constraints: MediaStreamConstraints = {
+    video: {
+      width: { ideal: 1280 }, // Preferred resolution
+      height: { ideal: 720 },
+      frameRate: { ideal: 30, max: 60 }, // Frame rate
+      facingMode: "user", // Use front camera
+    },
+    audio: true, // Enable audio
+  };
+  
   const startMyVideo = async () => {
     try {
-      const localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+      const localStream = await navigator.mediaDevices.getUserMedia(constraints);
       if (localVideoRef.current) {
         localVideoRef.current.srcObject = localStream;
       }
       if (socket) {
-        socket.emit("join-room", { username, roomId });
+        socket.emit("join-room", { username:user.username, roomId });
       }
     } catch (error) {
       console.error("Error accessing media devices:", error);
@@ -67,6 +75,7 @@ const VideoCallComponent = () => {
 
     if (peer.peer) {
       peer.peer.onicecandidate = (event: RTCPeerConnectionIceEvent) => {
+        
         if (socket) {
           socket.emit("ice-candidate", { to: id, candidate: event.candidate });
         }
@@ -74,7 +83,7 @@ const VideoCallComponent = () => {
     }
   },[socket]);
 
-  const handleUserJoined = useCallback(async({ username, id }: { username: string; id: string }) => {
+  const handleUserJoined = useCallback(async({ id }: { id: string }) => {
     await createPeerConnection({ id });
     setuserStream(true)
     const offer =  await peer.getOffer();
@@ -92,17 +101,17 @@ const VideoCallComponent = () => {
     }
   }, [socket]);
 
-  const handleIncomingAnswer = useCallback(async({ from, answer }: { from: string; answer: RTCSessionDescriptionInit }) => {
+  const handleIncomingAnswer = useCallback(async({ answer }: { answer: RTCSessionDescriptionInit }) => {
     peer.setLocalDescription(answer)
   }, []);
 
-  const handleIceCandidates = useCallback(async({ from, candidate }: { from: string; candidate: RTCIceCandidate }) => {
+  const handleIceCandidates = useCallback(async({ candidate }: { candidate: RTCIceCandidate }) => {
     if (peer.peer) {
       await peer.peer.addIceCandidate(candidate);
     }
   }, []);
 
-  const handleUserLeft = useCallback(async({ username, id }: { username: string; id: string }) => {
+  const handleUserLeft = useCallback(async() => {
     setuserStream(false);
     const remoteStream = new MediaStream();
     if (remoteVideoRef.current) {
@@ -111,15 +120,10 @@ const VideoCallComponent = () => {
     navigate('/room');
   }, []);
 
-  const handleRoomFull = useCallback(async({ message}: { message: string}) => {
-    alert(message);
-    navigate('/room');
-
-  }, []);
 
   const endCall = useCallback(async() => {
     if(socket){
-      socket.emit("user:leave", { username,roomId });
+      socket.emit("user:leave", { username:user.username,roomId });
       const remoteStream = new MediaStream();
       const localStream = new MediaStream();
   
@@ -152,6 +156,14 @@ const VideoCallComponent = () => {
       });
     }
   }
+  const handleInvite = useCallback(async() => {
+    const inviteText = `${HOST_URL}/video/${roomId}`;
+    navigator.clipboard.writeText(inviteText).then(() => {
+      toast.success("Invite link copied to clipboard!");
+    });
+  }
+  , [roomId]);
+
   useEffect(() => {
     startMyVideo();
     socket.on("user-joined", handleUserJoined);
@@ -159,7 +171,6 @@ const VideoCallComponent = () => {
     socket.on('incoming:answer',handleIncomingAnswer);
     socket.on('incoming:candidate',handleIceCandidates)
     socket.on('user-left',handleUserLeft)
-    socket.on('room-full',handleRoomFull)
 
     return () => {
       socket.off("user-joined", handleUserJoined);
@@ -167,7 +178,6 @@ const VideoCallComponent = () => {
       socket.off('incoming:answer',handleIncomingAnswer);
       socket.off('incoming:candidate',handleIceCandidates)
       socket.off('user-left',handleUserLeft)
-      socket.off('room-full',handleRoomFull)
     };
   }, [handleIceCandidates, handleIncomingAnswer, handleIncomingCall, handleUserJoined, handleUserLeft,socket]);
   
@@ -199,23 +209,29 @@ const VideoCallComponent = () => {
           </div>
         </div>
 
-        <div className="flex items-center space-x-12 absolute bottom-2">
-          <div className="cursor-pointer" onClick={toggleMic}>
+        <div className="flex items-center space-x-3  md:space-x-12 absolute bottom-4">
+          <div className="cursor-pointer bg-[#5409DA] rounded-full p-2.5" onClick={toggleMic}>
           {!micOn ? (
-            <FaMicrophoneSlash color="blue" fontSize={'32'}/>
+            <FaMicrophoneSlash color="white" fontSize={'32'}/>
           ) : (
-            <FaMicrophone color="blue"  fontSize={'32'} />
+            <FaMicrophone color="white"  fontSize={'32'} />
           )}
           </div>
-          <div className="cursor-pointer" onClick={toggleCamera}>
+          <div className="cursor-pointer bg-[#5409DA] rounded-full p-2.5" onClick={toggleCamera}>
           {!cameraOn ? (
-            <FiCameraOff color="blue"  fontSize={'38'}/>
+            <FiCameraOff color="white"  fontSize={'38'}/>
           ) : (
-            <AiTwotoneCamera color="blue"  fontSize={'38'}/>
+            <AiTwotoneCamera color="white"  fontSize={'38'}/>
          )}
         </div>
-         <div onClick={endCall} className=" cursor-pointer">
-         <MdCallEnd color="blue" fontSize={'38'} />
+         <div onClick={endCall} className="cursor-pointer bg-[#5409DA] rounded-full p-2.5">
+            <MdCallEnd color="white" fontSize={'38'} />
+         </div>
+
+         <div onClick={handleInvite} className="cursor-pointer">
+            <div className="bg-[#5409DA] rounded-full p-2 bottom-0">
+              <IoMdPersonAdd color="white" fontSize={'38'} />
+            </div>
          </div>
         </div>
       </div>

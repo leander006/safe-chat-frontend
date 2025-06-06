@@ -8,19 +8,16 @@ import type { User } from "../utils/types";
 
 
 function UserInfo({ user }: { user: User }) {
-
-    const socketContext = useSocket();
-    const socket = socketContext;
-    const userContext = GetUser();
-    const userDetails = userContext ? userContext.user : null;
+    const userDetails :User|any = GetUser();   
+    const socket = useSocket();
     const { setTo} = useConnectionStatus();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+
     const handleAudioCall = useCallback(() => {
         const newRoomId = Math.random().toString(36).substring(2, 15);
         socket.emit("audio-call", {from:userDetails, to: user, roomId: newRoomId });
         setTo(user);
         navigate(`/outgoingCall/${newRoomId}`);
-        console.log("Audio call initiated with user:", user.username);
     }, []);
 
     const handleVideoCall = useCallback(() => {
@@ -31,9 +28,9 @@ function UserInfo({ user }: { user: User }) {
         console.log("Video call initiated with user:", user.username);
     }, []);
     return (
-        <div className="flex items-center justify-between w-full bg-[#8DD8FF] rounded-xl">
+        <div className="flex items-center justify-between w-full bg-[#8DD8FF] rounded-lg">
             <div className="flex items-center space-x-2 mx-1 p-2">
-                <img className="rounded-full w-9 h-9" src={user.profile} alt={user.username} />
+                <img className="rounded-full border bg-white w-9 h-9" src={user.profile} alt={user.username} />
                 <h1 className="text-[#4E71FF]">{user.username}</h1>
             </div>
             <div className="flex items-center space-x-1 md:space-x-4 text-[#4E71FF] mr-2">

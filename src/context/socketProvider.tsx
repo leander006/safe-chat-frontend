@@ -19,7 +19,8 @@ interface ConnectionContextType {
   from: User | null,
   to: User | null,
   setTo: React.Dispatch<React.SetStateAction<User | null>>
-  audio : false | boolean,
+  audio : boolean | false,
+  setAudio : React.Dispatch<React.SetStateAction<boolean | false>>,
   setFrom : React.Dispatch<React.SetStateAction<User | null>>
 }
 
@@ -30,19 +31,12 @@ export const ConnectionStatusContext = createContext<ConnectionContextType>({
   to: null,
   setTo: () => {},
   audio: false,
+  setAudio: () => {},
   setFrom: () => {}
 });
 
 const SocketContext = createContext<Socket | null>(null);
-// const ConnectionStatusContext = createContext({
-//   isConnected: true,
-//   error: false,
-//   from: null as User | null,
-//   to: null as User | null,
-//   setTo: (user: User) => {},
-//   audio : false,
-//   setFrom : (user:User) => {},
-// });
+
 
 export const useSocket = () => {
   const socket = useContext(SocketContext);
@@ -66,8 +60,8 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate()
   const socket = useMemo(() => {
     const newSocket = io(Endpoint, {
-      reconnectionAttempts: 3, // Attempt to reconnect 3 times
-      reconnectionDelay: 5000, // Retry every 5 seconds
+      reconnectionAttempts: 3,
+      reconnectionDelay: 5000,
     });
 
     newSocket.on("connect", () => {
@@ -93,33 +87,27 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     socket.on("incoming:audio", ({from,roomId}) => {
-      console.log("incoming audio call:",roomId);
       setFrom(from);
       setAudio(true)
       navigate(`/incomingCall/${roomId}`);
     });
 
     socket.on("incoming:video", ({from,roomId}) => {
-      console.log("incoming video call:",roomId);
       setFrom(from);
+      setAudio(false)
       navigate(`/incomingCall/${roomId}`);
     });
 
     socket.on("outgoing-call-rejected", () => {
-      console.log("Outgoing call rejected");
       setFrom(null);
       setTo(null);
-      console.log("Navigating to room",from,to);
-      
-      navigate("/room");
+      navigate("/call");
     });
 
     socket.on("outgoing-video-call-accepted", ({roomId}) => {
-      console.log("Outgoing call accepted, navigating to room:", roomId);
       navigate("/video/"+roomId);
     });
     socket.on("outgoing-audio-call-accepted", ({roomId}) => {
-      console.log("Outgoing call accepted, navigating to room:", roomId);
       navigate("/audio/"+roomId);
     });
 
@@ -127,7 +115,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <SocketContext.Provider value={socket}>
-      <ConnectionStatusContext.Provider value={{ isConnected, error, from,to,setTo ,audio,setFrom}}>
+      <ConnectionStatusContext.Provider value={{ isConnected, error, from,to,setTo ,audio,setFrom,setAudio}}>
         {children}
       </ConnectionStatusContext.Provider>
     </SocketContext.Provider>

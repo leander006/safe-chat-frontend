@@ -8,6 +8,7 @@ import { MdCallEnd } from "react-icons/md";
 import { GetUser } from "../context/UserProvider";
 import NavBar from "./Navbar";
 import CallAnimation from "./CallAnimation";
+import type { User } from "../utils/types";
 
 
 const AudioCallComponent = () => {
@@ -17,10 +18,7 @@ const AudioCallComponent = () => {
   const { from,to,setTo ,setFrom} = useConnectionStatus();
   const { roomId } = useParams();
   const navigate = useNavigate();
-  const userContext = GetUser();
-
-  // @ts-ignore
-  const username = userContext ? userContext.user?.username : null;
+  const user:User|any = GetUser();
 
   const socketContext = useSocket();
   const socket = socketContext;
@@ -32,7 +30,7 @@ const AudioCallComponent = () => {
         localVideoRef.current.srcObject = localStream;
       }
       if (socket) {
-        socket.emit("join-room", { username, roomId });
+        socket.emit("join-room", { username:user.username, roomId });
       }
     } catch (error) {
       console.error("Error accessing media devices:", error);
@@ -71,7 +69,7 @@ const AudioCallComponent = () => {
     }
   },[socket]);
 
-  const handleUserJoined = useCallback(async({ username, id }: { username: string; id: string }) => {
+  const handleUserJoined = useCallback(async({id }: {id: string }) => {
     await createPeerConnection({ id });
     const offer =  await peer.getOffer();
     if(socket){
@@ -88,11 +86,11 @@ const AudioCallComponent = () => {
     }
   }, [socket]);
 
-  const handleIncomingAnswer = useCallback(async({ from, answer }: { from: string; answer: RTCSessionDescriptionInit }) => {
+  const handleIncomingAnswer = useCallback(async({ answer }: { answer: RTCSessionDescriptionInit }) => {
     peer.setLocalDescription(answer)
   }, []);
 
-  const handleIceCandidates = useCallback(async({ from, candidate }: { from: string; candidate: RTCIceCandidate }) => {
+  const handleIceCandidates = useCallback(async({ candidate }: { candidate: RTCIceCandidate }) => {
     if (peer.peer) {
       await peer.peer.addIceCandidate(candidate);
     }
@@ -104,19 +102,13 @@ const AudioCallComponent = () => {
       remoteVideoRef.current.srcObject = remoteStream;
     }
     setTo(null);
-    setFrom(null); // Clear the 'from' state  
-    console.log(`setting to undefined ${to}`);
-    navigate('/room');
-  }, []);
-
-  const handleRoomFull = useCallback(async({ message}: { message: string}) => {
-    alert(message);
+    setFrom(null); 
     navigate('/room');
   }, []);
 
   const endCall = useCallback(async() => {
     if(socket){
-      socket.emit("user:leave", { username,roomId });
+      socket.emit("user:leave", { username:user.username,roomId });
       const remoteStream = new MediaStream();
       const localStream = new MediaStream();
   
@@ -136,7 +128,7 @@ const AudioCallComponent = () => {
          
       }
     }
-    navigate('/room');
+    navigate('/call');
   }, []);
 
   const toggleMic = async () => {
@@ -156,7 +148,6 @@ const AudioCallComponent = () => {
     socket.on('incoming:answer',handleIncomingAnswer);
     socket.on('incoming:candidate',handleIceCandidates)
     socket.on('user-left',handleUserLeft)
-    socket.on('room-full',handleRoomFull)
 
     return () => {
       socket.off("user-joined", handleUserJoined);
@@ -164,7 +155,6 @@ const AudioCallComponent = () => {
       socket.off('incoming:answer',handleIncomingAnswer);
       socket.off('incoming:candidate',handleIceCandidates)
       socket.off('user-left',handleUserLeft)
-      socket.off('room-full',handleRoomFull)
     };
   }, [handleIceCandidates, handleIncomingAnswer, handleIncomingCall, handleUserJoined, handleUserLeft,socket]);
     

@@ -2,13 +2,11 @@
 import React, { useEffect } from "react";
 import { GetUser } from "./context/UserProvider";
 import NavBar from "./component/Navbar";
-import { useConnectionStatus, useSocket } from "./context/socketProvider";
+import { useSocket } from "./context/socketProvider";
+import type { User } from "./utils/types";
 const Profile: React.FC = () => {
-     const userContext = GetUser();
-     const { isConnected } = useConnectionStatus();
-     const user = userContext?.user;
-     const socketContext = useSocket();
-     const socket = socketContext;
+    const user :User|any = GetUser();   
+    const socket = useSocket();
      useEffect(() => {     
         socket.emit("user-login",user);
     }, [socket]);  
@@ -21,12 +19,10 @@ const Profile: React.FC = () => {
             <div className="bg-[#5409DA] p-8 rounded-lg shadow-md">
               <h1 className="text-2xl text-[#BBFBFF] font-bold mb-4 text-center">User Profile</h1>
                 <div className="flex justify-center m-2">
-                    <img className="rounded-full w-12 h-12 md:w-32 md:h-32 border-2 bg-[#BBFBFF]" src={user?.profile} alt={user?.name} />
+                    <img className="rounded-full w-12 h-12 md:w-32 md:h-32 border-2 bg-white" src={user?.profile} alt={user?.username} />
                 </div>
                 <div className="flex flex-col items-center">
-                    <p className="text-[#BBFBFF] mb-2">Name: {user?.name}</p>
-                    <p className="text-[#BBFBFF] mb-2">Email: {user?.email}</p>
-                    <p className="text-[#BBFBFF] mb-2">Status: {user?.status}</p>
+                    <p className="text-[#BBFBFF] mb-2">Name: {user?.username}</p>
                 </div>
             </div>
           </div>

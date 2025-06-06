@@ -6,19 +6,18 @@ import { MdCallEnd } from "react-icons/md";
 import { useCallback } from "react";
 import { GetUser } from "./context/UserProvider";
 import AudioCallAnimation from "./component/AudioCallAnimation";
+import type { User } from "./utils/types";
 
 
 function IncomingCall() {
     const { roomId } = useParams<{ roomId: string }>();
     const { from,audio,setFrom } = useConnectionStatus();
     const navigate = useNavigate();
-    const userContext = GetUser();
-    const socketContext = useSocket();
-    const socket = socketContext;
+    const user :User|any = GetUser();   
+    const socket = useSocket();
 
     const handleCall = useCallback(() => {
-        console.log("Accepting call ",roomId);
-        console.log("audio in handleCall", audio);
+        console.log("Accepting call from", audio);
         if(audio){
             socket.emit("audio-call-accepted", { to:from ,roomId});
             navigate(`/audio/${roomId}`)
@@ -29,10 +28,9 @@ function IncomingCall() {
     }, []);
 
     const endCall = useCallback(() => {
-        console.log("Ending call");
         socket.emit("call-rejected", { to:from });
-        setFrom(null); // Clear the 'from' state
-        navigate("/room");
+        setFrom(null); 
+        navigate("/call");
     }, []);
 
   return (
@@ -43,7 +41,7 @@ function IncomingCall() {
         <div className="p-6 rounded-lg flex flex-col justify-center">
           <div className="bg-[#5409DA] p-8 rounded-lg shadow-md h-[calc(100vh-20rem)] md:w-[500px] w-[calc(100vw-3rem)]  flex flex-col items-center space-y-4 justify-center">
             <h1 className="text-[#8DD8FF] pt-6 pb-12">Incoming call from ......</h1>
-            <AudioCallAnimation user1={userContext?.user} user2={from}/>
+            {from && <AudioCallAnimation user1={user} user2={from}/>}
             <div className="text-[#8DD8FF] flex  items-center space-x-6">
                 <div onClick={handleCall} className="cursor-pointer">
                 <IoMdCall fontSize={"32"}/>

@@ -27,7 +27,11 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const initialUserData = useMemo(() => {
     const user = Cookies.get("user");
     console.log("User data from cookies:", user);
-
+    console.log("auth data from cookies:", Cookies.get("authToken"));
+    document.cookie.split(";").forEach((cookie) => {
+      const [name, value] = cookie.split("=");
+      console.log(`Cookie Name: ${name.trim()}, Value: ${value}`);
+    })
     return user
       ?JSON.parse(user)
       : null;

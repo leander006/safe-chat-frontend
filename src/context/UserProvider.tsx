@@ -26,9 +26,12 @@ export const GetUser = () => {
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const initialUserData = useMemo(() => {
     const user = Cookies.get("user");
+    console.log("User data from cookies:", user);
+
     return user
       ?JSON.parse(user)
       : null;
+      
   }, []);
 
   const [user, setUser] = useState<string | null>(initialUserData);

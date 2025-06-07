@@ -1,10 +1,11 @@
 import React from "react";
 import NavBar from "./component/Navbar";
+import { BASE_URL } from "./utils/service";
 
 const Login: React.FC = () => {
   const google = async (e:any) => {
     e.preventDefault();
-    window.open(`http://localhost:3001/api/auth/google`, "_self");
+    window.open(`${BASE_URL}/api/auth/google`, "_self");
   };
   
   return (

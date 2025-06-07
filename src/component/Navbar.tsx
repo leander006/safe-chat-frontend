@@ -31,7 +31,7 @@ const NavBar = () => {
   return (
     <div className="flex justify-between items-center bg-[#5409DA] w-full shadow-xl z-50 fixed h-12">
       <div>
-        <Link to={"/"} className="ml-2 text-[#8DD8FF] text-4xl font-Blaka">FreeChat</Link>
+        <Link to={"/"} className="ml-2 text-[#8DD8FF] text-4xl font-Blaka">Holla</Link>
       </div>
 
       <ul className="hidden md:flex">
@@ -65,7 +65,7 @@ const NavBar = () => {
             <div className=" mt-4 w-full items-center">
               <div className="flex justify-between">
                 <h1 className="text-[#8DD8FF] text-4xl font-Blaka">
-                  FreeChat
+                  Holla
                 </h1>
                 <div
                   onClick={() => setNav(!nav)}

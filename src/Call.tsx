@@ -40,7 +40,7 @@ useEffect(() => {
             <div className="bg-[#5409DA] p-1 rounded-lg shadow-md">
               {updatedusers.length ===1 && updatedusers[0].id === user?.id 
               && (
-                <h1 className="text-2xl text-[#BBFBFF] font-bold text-center">No users available for call</h1>
+                <h1 className="text-2xl text-[#BBFBFF] font-bold text-center my-2">No users available for call</h1>
               )}
               <div className=" m-4">
                 {updatedusers.length > 0 && (

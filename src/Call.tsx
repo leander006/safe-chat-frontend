@@ -9,6 +9,7 @@ import type { User } from "./utils/types";
 
 const Call: React.FC = () => {
   const [updatedusers, setupdatedUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const user :User|any = GetUser();   
   const socket = useSocket();
 
@@ -19,7 +20,9 @@ const Call: React.FC = () => {
 
 
 const handleUpdatedList = useCallback(async( users:User[] ) => {
+  setLoading(true);
   setupdatedUsers(users);
+  setLoading(false);
 }, [socket]);
 
 useEffect(() => {
@@ -37,11 +40,12 @@ useEffect(() => {
       <div className="h-full w-full flex flex-col md:flex-row">
         <div className="w-full h-full flex items-center justify-center bg-gray-200">
           <div className="md:w-2/3 h-1/2 p-0.5 rounded-lg ">
-            <div className="bg-[#5409DA] p-1 rounded-lg shadow-md">
+            {!loading?<div className="bg-[#5409DA] p-1 rounded-lg shadow-md">
               {updatedusers.length ===1 && updatedusers[0].id === user?.id 
               && (
-                <h1 className="text-2xl text-[#BBFBFF] font-bold text-center my-2">No users available for call</h1>
-              )}
+                <h1 className="text-2xl text-[#BBFBFF] font-bold text-center my-2">No users available for call</h1> 
+              )
+             }
               <div className=" m-4">
                 {updatedusers.length > 0 && (
                   <ul className="text-lg text-gray-600">
@@ -55,7 +59,11 @@ useEffect(() => {
                   </ul>
                 )}
                 </div>
-            </div>
+            </div>:
+                  <div className="text-2xl h-16 animate-pulse bg-[#5409DA] rounded-lg shadow-md">
+                            
+                  </div>
+            }
           </div>
         </div>
       </div>

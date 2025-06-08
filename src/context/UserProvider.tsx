@@ -4,9 +4,11 @@ import  {
   useContext,
   useState,
   type ReactNode,
+  useEffect,
 } from "react";
 import Cookies from "js-cookie";
-
+import axios from "axios";
+import { BASE_URL } from "../utils/service";
 interface UserContextType {
   user: string | null;
   setUser: React.Dispatch<React.SetStateAction<string | null>>;
@@ -37,8 +39,32 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       : null;
       
   }, []);
-
   const [user, setUser] = useState<string | null>(initialUserData);
+
+  useEffect(() => {
+    async function fetchUser() {
+        try {
+            const response = await axios.get(`${BASE_URL}/api/auth/user/me`, {
+                withCredentials: true,
+            });
+            console.log("Fetched user data:", response.data.user);
+
+            fetch(`${BASE_URL}/api/auth/user/me`, {
+              credentials: 'include', // Sends cookies with the request
+            })
+              .then(response => response.json())
+              .then(data => {
+                console.log(data); // Use user data in your React app
+              });
+            setUser(response.data.user);
+        } catch (error) {
+            console.error("User not authenticated:", error);
+        }
+    }
+
+    fetchUser();
+}, []);
+
   return (
     <UserContext.Provider
       value={{ user, setUser }}

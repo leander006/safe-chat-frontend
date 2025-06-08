@@ -3,9 +3,10 @@ import { Link, useNavigate } from "react-router";
 import { FaBars } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
 import { UserContext } from "../context/UserProvider";
-import Cookies from "js-cookie";
 import { useSocket} from "../context/socketProvider";
-
+import axios from "axios";
+import { BASE_URL } from "../utils/service";
+import Cookies from "js-cookie";
 const NavBar = () => {
   const links = [
     { id: 1, name:"room",links: "/room" },
@@ -21,8 +22,13 @@ const NavBar = () => {
 
   const logout = useCallback(async(e:any) => {
       e.preventDefault();
-      Cookies.remove("user");
-      Cookies.remove("authToken");
+    try {
+        await axios.get(`${BASE_URL}/api/auth/user/logout`, {
+            withCredentials: true,
+        });
+    } catch (error) {
+        console.error("Logout failed:", error);
+    }
       socket.emit("logout",user)
       userContext?.setUser(null);
       navigate("/");

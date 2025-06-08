@@ -9,7 +9,6 @@ import { FaMicrophoneSlash } from "react-icons/fa";
 import { MdCallEnd } from "react-icons/md";
 import { GetUser } from "../context/UserProvider";
 import { IoMdPersonAdd } from "react-icons/io";
-import { HOST_URL } from "../utils/service";
 import type { User } from "../utils/types";
 import { toast } from 'react-toastify';
 

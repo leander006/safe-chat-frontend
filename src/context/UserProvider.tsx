@@ -1,12 +1,10 @@
 import  {
   createContext,
-  useMemo,
   useContext,
   useState,
   type ReactNode,
   useEffect,
 } from "react";
-import Cookies from "js-cookie";
 import axios from "axios";
 import { BASE_URL } from "../utils/service";
 interface UserContextType {

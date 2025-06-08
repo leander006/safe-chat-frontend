@@ -103,7 +103,7 @@ const AudioCallComponent = () => {
     }
     setTo(null);
     setFrom(null); 
-    navigate('/room');
+    navigate('/call');
   }, []);
 
   const endCall = useCallback(async() => {

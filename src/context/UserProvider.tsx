@@ -35,7 +35,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
             const response = await axios.get(`${BASE_URL}/api/auth/user/me`, {
                 withCredentials: true,
             });
-            console.log("Fetched user data:",response.data.user);
             setUser(response.data.user);
         } catch (error) {
             console.error("User not authenticated:", error);

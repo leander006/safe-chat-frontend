@@ -7,7 +7,7 @@ import type { User } from './utils/types';
 import { toast } from 'react-toastify';
 
 function Room() {
-  const [url, setUrl] = useState<string>("");
+  const [roomId, setRoomId] = useState<string>("");
   const navigate = useNavigate();
   const user :User|any = GetUser();   
   const socket = useSocket();
@@ -18,13 +18,12 @@ function Room() {
 
 const joinRoom = (e:any) => {
     e.preventDefault();
-    const roomId = url.split("/").pop();  
     console.log("Joining room with ID:", roomId);
     socket.emit('check-room',{roomId:roomId, username:user.username});
   }
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUrl(e.target.value);
+    setRoomId(e.target.value);
   };
 
   const checkRoomExists = useCallback(({exist,roomId}:{exist:boolean,roomId:string}) => {
@@ -66,8 +65,8 @@ const joinRoom = (e:any) => {
               <form onSubmit={joinRoom} className="my-4 space-y-4 ">
                 <input 
                   type="text" 
-                  placeholder="Enter meeting url" 
-                  value={url}
+                  placeholder="Enter meeting roomId" 
+                  value={roomId}
                   required
                   onChange={handleChange} 
                   className="w-full p-2 border border-gray-300 rounded"

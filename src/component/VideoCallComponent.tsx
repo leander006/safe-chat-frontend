@@ -24,6 +24,7 @@ const VideoCallComponent = () => {
   const navigate = useNavigate();
   const user :User|any = GetUser();   
   const socket = useSocket();
+  
   const constraints: MediaStreamConstraints = {
     video: {
       width: { ideal: 1280 }, // Preferred resolution
@@ -157,9 +158,12 @@ const VideoCallComponent = () => {
     }
   }
   const handleInvite = useCallback(async() => {
-    const inviteText = `${HOST_URL}/video/${roomId}`;
-    navigator.clipboard.writeText(inviteText).then(() => {
-      toast.success("Invite link copied to clipboard!");
+    if (!roomId) {
+      toast.error("Room ID is not available.");
+      return;
+    }
+    navigator.clipboard.writeText(roomId).then(() => {
+      toast.success("Room Id copied to clipboard!");
     });
   }
   , [roomId]);

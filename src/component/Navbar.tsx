@@ -6,7 +6,6 @@ import { UserContext } from "../context/UserProvider";
 import { useSocket} from "../context/socketProvider";
 import axios from "axios";
 import { BASE_URL } from "../utils/service";
-import Cookies from "js-cookie";
 const NavBar = () => {
   const links = [
     { id: 1, name:"room",links: "/room" },
@@ -20,7 +19,7 @@ const NavBar = () => {
   const navigate = useNavigate();
   const socket = useSocket();
 
-  const logout = useCallback(async(e:any) => {
+  const logout = useCallback(async(e: React.MouseEvent<HTMLLIElement>) => {
       e.preventDefault();
     try {
         await axios.get(`${BASE_URL}/api/auth/user/logout`, {
@@ -32,7 +31,7 @@ const NavBar = () => {
       socket.emit("logout",user)
       userContext?.setUser(null);
       navigate("/");
-    }, []);
+    },[]);
 
   return (
     <div className="flex justify-between items-center bg-[#5409DA] w-full shadow-xl z-50 fixed h-12">

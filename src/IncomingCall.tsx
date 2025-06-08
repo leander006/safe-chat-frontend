@@ -3,7 +3,7 @@ import NavBar from "./component/Navbar";
 import { useConnectionStatus, useSocket } from "./context/socketProvider";
 import { IoMdCall } from "react-icons/io";
 import { MdCallEnd } from "react-icons/md";
-import { useCallback } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { GetUser } from "./context/UserProvider";
 import AudioCallAnimation from "./component/AudioCallAnimation";
 import type { User } from "./utils/types";
@@ -15,6 +15,7 @@ function IncomingCall() {
     const navigate = useNavigate();
     const user :User|any = GetUser();   
     const socket = useSocket();
+    const incomingAudioRef = useRef<HTMLAudioElement | null>(null);
 
     const handleCall = useCallback(() => {
         console.log("Accepting call from", audio);
@@ -33,11 +34,27 @@ function IncomingCall() {
         navigate("/call");
     }, []);
 
+    useEffect(() => {
+      // Play the audio when the component mounts
+      if (incomingAudioRef.current) {
+        incomingAudioRef.current.play().catch((err) => console.log("Audio Error:", err));
+      }
+  
+      return () => {
+        // Pause and reset audio when the component unmounts
+        if (incomingAudioRef.current) {
+          incomingAudioRef.current.pause();
+          incomingAudioRef.current.currentTime = 0;
+        }
+      };
+    }, []);
+  
   return (
     <div className="h-screen w-screen flex flex-col">
     <NavBar/>
     {/* <div className="h-full w-full flex flex-col"> */}
       <div className="w-full h-full flex justify-center bg-gray-200">
+      <audio ref={incomingAudioRef} src="/incomingCall.mp3" />
         <div className="p-6 rounded-lg flex flex-col justify-center">
           <div className="bg-[#5409DA] p-8 rounded-lg shadow-md h-[calc(100vh-20rem)] md:w-[500px] w-[calc(100vw-3rem)]  flex flex-col items-center space-y-4 justify-center">
             <h1 className="text-[#8DD8FF] pt-6 pb-12">Incoming call from ......</h1>

@@ -26,20 +26,8 @@ export const GetUser = () => {
 };
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-  const initialUserData = useMemo(() => {
-    const user = Cookies.get("user");
-    console.log("User data from cookies:", user);
-    console.log("auth data from cookies:", Cookies.get("authToken"));
-    document.cookie.split(";").forEach((cookie) => {
-      const [name, value] = cookie.split("=");
-      console.log(`Cookie Name: ${name.trim()}, Value: ${value}`);
-    })
-    return user
-      ?JSON.parse(user)
-      : null;
-      
-  }, []);
-  const [user, setUser] = useState<string | null>(initialUserData);
+
+  const [user, setUser] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchUser() {
@@ -47,15 +35,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
             const response = await axios.get(`${BASE_URL}/api/auth/user/me`, {
                 withCredentials: true,
             });
-            console.log("Fetched user data:", response.data.user);
-
-            fetch(`${BASE_URL}/api/auth/user/me`, {
-              credentials: 'include', // Sends cookies with the request
-            })
-              .then(response => response.json())
-              .then(data => {
-                console.log(data); // Use user data in your React app
-              });
+            console.log("Fetched user data:",response.data.user);
             setUser(response.data.user);
         } catch (error) {
             console.error("User not authenticated:", error);
